@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.7c70750a.css",
-    "main.js": "/static/js/main.49f0e20c.js",
+    "main.js": "/static/js/main.5e7f6c50.js",
     "static/media/bg-banner-01.png": "/static/media/bg-banner-01.045cff2668ecf6414bf5.png",
     "static/media/banner.png": "/static/media/banner.ba79756fb5c8dafa5b90.png",
     "static/media/bg-banner-02.png": "/static/media/bg-banner-02.6c07feec0a00169c9987.png",
@@ -92,6 +92,7 @@
     "static/media/category-7.svg": "/static/media/category-7.4b520dfcdc5656e1c5e460dd2d348928.svg",
     "static/media/icon-09.svg": "/static/media/icon-09.6b65d71f655c3b904ce5e2c637ce7cf3.svg",
     "static/media/count-four.svg": "/static/media/count-four.eda23cf770e6a0af8199f1befa80c75e.svg",
+    "index.html": "/index.html",
     "static/media/certificate-icon.svg": "/static/media/certificate-icon.7f8b795146d9561950b94dc78c3d30b3.svg",
     "static/media/winning.svg": "/static/media/winning.c04a4f53e96bbe8f84fdfb73d22db75c.svg",
     "static/media/icon-4.svg": "/static/media/icon-4.e3c73b48ea5c1377ac48dab58a96eda0.svg",
@@ -152,7 +153,6 @@
     "static/media/skills-04.svg": "/static/media/skills-04.fb440a06fc8ec2433918d9bf41d22e68.svg",
     "static/media/career-01.svg": "/static/media/career-01.16d18cbf6ce4e67af0fe01829b84cc92.svg",
     "static/media/category-6.svg": "/static/media/category-6.f1deb71d1a8c37bc2ea93dafaa1c9bdd.svg",
-    "index.html": "/index.html",
     "static/media/import.svg": "/static/media/import.fa0c00e3f96638b9210d00acfc011956.svg",
     "static/media/icon-23.svg": "/static/media/icon-23.c58976456b8ccfc27446e83a157df1e1.svg",
     "static/media/icon-24.svg": "/static/media/icon-24.c8d02ea307553780bce2406a4df7b897.svg",
@@ -187,10 +187,10 @@
     "static/media/ellipse-2.svg": "/static/media/ellipse-2.7fff44abc24dd8114ddf1d571aa79864.svg",
     "static/media/ellipse-3.svg": "/static/media/ellipse-3.23ac211eb01e22f45bea194b6430fef3.svg",
     "main.7c70750a.css.map": "/static/css/main.7c70750a.css.map",
-    "main.49f0e20c.js.map": "/static/js/main.49f0e20c.js.map"
+    "main.5e7f6c50.js.map": "/static/js/main.5e7f6c50.js.map"
   },
   "entrypoints": [
     "static/css/main.7c70750a.css",
-    "static/js/main.49f0e20c.js"
+    "static/js/main.5e7f6c50.js"
   ]
 }
