@@ -112,7 +112,7 @@ import About from "./components/pages/About"; //Adding college list
 
 const Approuter = () => {
   return (
-    <BrowserRouter basename="/reactjs">
+    <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/home2" element={<Home2 />} />
