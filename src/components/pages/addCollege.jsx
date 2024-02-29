@@ -97,6 +97,7 @@ const AddCategory = () => {
               </form>
             </div>
           </div>
+          <p>Testing</p>
         </fieldset>
       </div>
     </>
