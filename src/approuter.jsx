@@ -106,7 +106,7 @@ import NewPassword from "./components/pages/newPassword";
 
 import OurColleges from "./components/pages/OurColleges"; //Adding college list
 import OurCourses from "./components/pages/OurCourses"; //Adding college list
-import About from "./components/pages/About"; //Adding college list
+// import About from "./components/pages/About"; //Adding college list
 
 
 
@@ -114,6 +114,7 @@ const Approuter = () => {
   return (
     <BrowserRouter>
       <Routes>
+      <Route path="*" element={<Error404 />} />
         <Route path="/" element={<Home />} />
         <Route path="/home2" element={<Home2 />} />
         <Route path="/home3" element={<Home3 />} />
@@ -138,8 +139,6 @@ const Approuter = () => {
         {/* Pages */}
         <Route path="/our-colleges" element={<OurColleges />} /> {/* College List Page */}
         <Route path="/our-courses" element={<OurCourses />} /> {/* College List Page */}
-        <Route path="/about" element={<About />} /> {/* College List Page */}
-        
         <Route path="/page-notification" element={<Notification />} />
         <Route path="/pricing-plan" element={<PricingPlan />} />
         <Route path="/pricing-plan2" element={<PricingPlan2 />} />

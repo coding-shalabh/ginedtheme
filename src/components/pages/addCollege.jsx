@@ -159,7 +159,7 @@ const AddCollege = () => {
       <div>
         <CourseHeader />
         <fieldset style={{ marginTop: "20px", width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }} id="first">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className="AdminForms">
             {/* Form fields here */}
             <div className="form-group">
               <label>College Name</label>

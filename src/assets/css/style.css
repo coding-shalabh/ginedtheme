@@ -130,6 +130,8 @@ label {
     display: inline-block;
     margin-bottom: 0.5rem;
 }
+
+
 .form-group {
     margin-bottom: 1rem;
 }
@@ -18333,6 +18335,12 @@ input[type=password]::-ms-clear
 /*-----------------
 	52. Responsive
 -----------------------*/
+@media (min-width: 360px) {
+
+    .AdminForms {
+        width: 90%;
+    }
+}
 
 @media (min-width: 992px) {
 	.main-nav > li {
