@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import axios from 'axios'; // Make sure to install axios
-import TextEditor from './course/addCourse/editor';
+import axios from 'axios';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import CourseHeader from './course/header';
 
 const AddCategory = () => {
@@ -8,34 +9,21 @@ const AddCategory = () => {
   const [categoryDescription, setCategoryDescription] = useState('');
 
   const saveCategory = async (e) => {
-    e.preventDefault(); // Prevent form from causing a page reload
+    e.preventDefault();
 
-    console.log(categoryTitle, categoryDescription);
     const categoryData = {
       title: categoryTitle,
       description: categoryDescription,
     };
 
     try {
-      // Make an API call to save the category
       const response = await axios.post('https://api.gined.in/api/categories/', categoryData);
       console.log('Category Saved Successfully:', response.data);
-      // Clear the form fields after successful submission
       setCategoryTitle('');
       setCategoryDescription('');
-      // Optionally, redirect or show a success message
     } catch (error) {
-      console.error('Error saving category:', error.response ? error.response.data : error);
-      // Optionally, handle errors, such as displaying an error message
+      console.error('Error saving category:', error.response ? error.response.data : error.message);
     }
-  };
-
-  const handleTitleChange = (e) => {
-    setCategoryTitle(e.target.value);
-  };
-
-  const handleDescriptionChange = (content) => {
-    setCategoryDescription(content);
   };
 
   return (
@@ -53,14 +41,18 @@ const AddCategory = () => {
                     className="form-control"
                     placeholder="Category Title"
                     value={categoryTitle}
-                    onChange={handleTitleChange}
+                    onChange={(e) => setCategoryTitle(e.target.value)}
                   />
                 </div>
                 <div className="form-group mb-0">
                   <label className="add-course-label">Category Description</label>
-                  <TextEditor
-                    value={categoryDescription}
-                    onChange={(updatedContent) => handleDescriptionChange(updatedContent)}
+                  <CKEditor
+                    editor={ClassicEditor}
+                    data={categoryDescription}
+                    onChange={(event, editor) => {
+                      const data = editor.getData();
+                      setCategoryDescription(data);
+                    }}
                   />
                 </div>
                 <div className="widget-btn">
