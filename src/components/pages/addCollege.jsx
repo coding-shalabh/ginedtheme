@@ -55,6 +55,7 @@ const AddCollege = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    console.log(formData);
     try {
       await axios.post("https://api.gined.in/api/colleges", formData, {
         headers: {
