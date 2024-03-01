@@ -19,11 +19,14 @@ const AddCollege = () => {
     virtualTourLink: "",
     youtubeVideos: ["", "", "", ""], // Initialize with 4 empty strings for YouTube videos
     reviews: "",
-    courses: [] // Use an array to hold multiple course IDs
+    categories: [],
+    courses: [], // Use an array to hold multiple course IDs
   });
 
   const [courses, setCourses] = useState([]);
   const [categories, setCategories] = useState([]);
+  // const [image, setImage] = useState("");
+
 
 
   useEffect(() => {
@@ -59,7 +62,7 @@ const AddCollege = () => {
         ...prevFormData,
         courses: selectedOptions
       }));
-    }else if (e.target.name === "categories") {
+    } else if (e.target.name === "categories") {
       // Handle multiple selections for courses
       const selectedOptions = Array.from(e.target.selectedOptions).map(option => option.value);
       setFormData(prevFormData => ({
@@ -67,7 +70,7 @@ const AddCollege = () => {
         categories: selectedOptions
       }));
     }
-     else if (e.target.name.startsWith("youtubeVideos")) {
+    else if (e.target.name.startsWith("youtubeVideos")) {
       // Handle YouTube video inputs
       const index = parseInt(e.target.name.replace("youtubeVideos", ""), 10);
       const newYoutubeVideos = [...formData.youtubeVideos];
@@ -76,7 +79,7 @@ const AddCollege = () => {
         ...prevFormData,
         youtubeVideos: newYoutubeVideos
       }));
-    }else if (["highestPackage", "averagePackage", "percentagePlaced", "companies"].includes(e.target.name)) {
+    } else if (["highestPackage", "averagePackage", "percentagePlaced", "companies"].includes(e.target.name)) {
       setFormData({
         ...formData,
         placements: {
@@ -84,7 +87,7 @@ const AddCollege = () => {
           [e.target.name]: e.target.value
         }
       })
-    } 
+    }
     else {
       // Handle other inputs including placements
       setFormData(prevFormData => ({
@@ -95,38 +98,61 @@ const AddCollege = () => {
   };
 
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+
+    if (file) {
+      // Check if the file size exceeds 2 MB
+      if (file.size > 2097152) { // 2 MB in bytes
+        alert("The image size should not exceed 2 MB.");
+        return; // Stop the function execution
+      }
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        // Set the converted base64 string to your state, assuming you have a state to hold it
+        // For example, setImageBase64(reader.result);
+        // setImage(reader.result); // setImage should be a state setter function for your base64 image data
+        setFormData((prev)=> ({...prev, image: reader.result}));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
 
-try {
-    const response = await axios.post('https://api.gined.in/api/colleges', formData);
-    console.log('Successfully submitted:', response.data);
-    console.log(formData);
-    alert('Form submitted successfully!');
-    // Reset the form data after successful submission
-    setFormData({
-      name: "",
-      about: "",
-      excerpt: "",
-      placements: {
-        companies: "",
-        highestPackage: "",
-        averagePackage: "",
-        percentagePlaced: ""
-      },
-      virtualTourLink: "",
-      youtubeVideos: ["", "", "", ""],
-      reviews: "",
-      categories: [],
-      courses: [],
-    });
-  } catch (error) {
-    console.error('Error submitting form:', error.response ? error.response.data : error);
-    alert('Failed to submit the form.');
-  }
-    };
+
+    try {
+      const response = await axios.post('https://api.gined.in/api/colleges', formData);
+      console.log('Successfully submitted:', response.data);
+      console.log(formData);
+      alert('Form submitted successfully!');
+      // Reset the form data after successful submission
+      setFormData({
+        name: "",
+        about: "",
+        excerpt: "",
+        placements: {
+          companies: "",
+          highestPackage: "",
+          averagePackage: "",
+          percentagePlaced: ""
+        },
+        virtualTourLink: "",
+        youtubeVideos: ["", "", "", ""],
+        reviews: "",
+        image: "",
+        categories: [],
+        courses: [],
+      });
+    } catch (error) {
+      console.error('Error submitting form:', error.response ? error.response.data : error);
+      alert('Failed to submit the form.');
+    }
+  };
 
   return (
     <>
@@ -142,13 +168,13 @@ try {
             <div className="form-group">
               <label>About the College</label>
               <CKEditor
-                    editor={ClassicEditor}
-                    data={formData.about}
-                    onChange={(event, editor) => {
-                      const data = editor.getData();
-                      setFormData((prev)=> ({...prev, about: data}));
-                    }}
-                  /></div>
+                editor={ClassicEditor}
+                data={formData.about}
+                onChange={(event, editor) => {
+                  const data = editor.getData();
+                  setFormData((prev) => ({ ...prev, about: data }));
+                }}
+              /></div>
             <div className="form-group">
               <label className="add-course-label">Short Description</label>
               <textarea className="form-control" placeholder="Short Description for College" name="excerpt" value={formData.excerpt} onChange={handleInputChange} ></textarea>
@@ -206,7 +232,7 @@ try {
                 ))}
               </select>
               <small>Hold down the Ctrl (windows) / Command (Mac) button to select multiple options.</small>
-            </div>  
+            </div>
 
             <div className="form-group">
               <label>Course Selection</label>
@@ -224,11 +250,11 @@ try {
               </select>
               <small>Hold down the Ctrl (windows) / Command (Mac) button to select multiple options.</small>
             </div>
-            {/* <div className="form-group">
-              <label>Upload College Image (1920px x 200px)</label>
-              <input type="file" className="form-control" />
+            <div className="form-group">
+              <label>Upload College Image</label>
+              <input type="file" className="form-control" onChange={handleImageChange} />
               <small>Please upload an image with size 1920px x 200px.</small>
-            </div> */}
+            </div>
             <button type="submit" className="btn btn-primary">Submit</button>
           </form>
         </fieldset>
