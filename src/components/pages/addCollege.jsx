@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import CourseHeader from "./course/header"; // Ensure this path is correct
+import CourseHeader from "./course/header";
 
 const AddCollege = () => {
   const [formData, setFormData] = useState({
-    collegeName: "",
-    aboutCollege: "",
+    name: "",
+    about: "",
     shortDescription: "",
     virtualTourLink: "",
     review: "",
@@ -15,17 +15,16 @@ const AddCollege = () => {
     highestPackage: "",
     averagePackage: "",
     percentagePlaced: "",
-    selectedCourse: ""
+    courses: "" // Assuming this is an array of course IDs
   });
-  const [courses, setCourses] = useState([]);
   const [image, setImage] = useState(null);
+  const [courses, setCourses] = useState([]);
 
-  // Fetch courses for the dropdown
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const { data } = await axios.get("https://api.gined.in/api/courses");
-        setCourses(data);
+        const response = await axios.get("https://api.gined.in/api/courses");
+        setCourses(response.data);
       } catch (error) {
         console.error("Error fetching courses:", error);
       }
@@ -43,33 +42,43 @@ const AddCollege = () => {
   };
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onloadend = () => {
-      setImage(reader.result);
-    };
+    setImage(e.target.files[0]);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const jsonPayload = JSON.stringify({
+      ...formData,
+      placements: {
+        companies: formData.placementCompanies.split(","), // Assuming placementCompanies is a comma-separated string
+        highestPackage: formData.highestPackage,
+        averagePackage: formData.averagePackage,
+        percentagePlaced: formData.percentagePlaced,
+      },
+      courses: formData.courses, // Assuming courses is a comma-separated string of course IDs
+    });
+
     const data = new FormData();
-    Object.entries(formData).forEach(([key, value]) => data.append(key, value));
-    if (image) data.append("image", image);
+    data.append("jsonPayload", jsonPayload);
+    if (image) {
+      data.append("image", image);
+    }
 
     try {
       await axios.post("https://api.gined.in/api/colleges", data, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
-      console.log(data);
       alert("College successfully saved!");
       // Optionally, reset the form state here
     } catch (error) {
-      console.error("Error saving college:", error.response?.data || error);
+      console.error("Error saving college:", error);
       alert("Failed to save college.");
     }
   };
+
 
   return (
     <>
