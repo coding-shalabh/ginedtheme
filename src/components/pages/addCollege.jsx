@@ -10,7 +10,7 @@ const AddCategory = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch('https://jsonplaceholder.typicode.com/users');
+        const response = await fetch('https://api.gined.in/api/colleges/');
         const data = await response.json();
         setCourses(data);
       } catch (error) {
