@@ -10,6 +10,7 @@ const AddCategory = () => {
   const saveCategory = async (e) => {
     e.preventDefault(); // Prevent form from causing a page reload
 
+    console.log(categoryTitle, categoryDescription);
     const categoryData = {
       title: categoryTitle,
       description: categoryDescription,
@@ -59,7 +60,7 @@ const AddCategory = () => {
                   <label className="add-course-label">Category Description</label>
                   <TextEditor
                     value={categoryDescription}
-                    onChange={handleDescriptionChange}
+                    onChange={(updatedContent) => handleDescriptionChange(updatedContent)}
                   />
                 </div>
                 <div className="widget-btn">
