@@ -163,7 +163,7 @@ const AddCollege = () => {
             {/* Form fields here */}
             <div className="form-group">
               <label>College Name</label>
-              <input type="text" name="name" className="form-control" value={formData.name} onChange={handleInputChange} />
+              <input required type="text" name="name" className="form-control" value={formData.name} onChange={handleInputChange} />
             </div>
             <div className="form-group">
               <label>About the College</label>
@@ -177,37 +177,38 @@ const AddCollege = () => {
               /></div>
             <div className="form-group">
               <label className="add-course-label">Short Description</label>
-              <textarea className="form-control" placeholder="Short Description for College" name="excerpt" value={formData.excerpt} onChange={handleInputChange} ></textarea>
+              <textarea required className="form-control" placeholder="Short Description for College" name="excerpt" value={formData.excerpt} onChange={handleInputChange} ></textarea>
             </div>
             <div className="form-group">
               <label className="add-course-label">Virtual Tour Link</label>
-              <input type="text" className="form-control" placeholder="Virtual Tour Link" name="virtualTourLink" value={formData.virtualTourLink} onChange={handleInputChange} />
+              <input required type="text" className="form-control" placeholder="Virtual Tour Link" name="virtualTourLink" value={formData.virtualTourLink} onChange={handleInputChange} />
             </div>
             <div className="form-group">
               <label className="add-course-label">Review for College</label>
-              <input type="number" className="form-control" placeholder="Review for College" name="reviews" value={formData.reviews} onChange={handleInputChange} />
+              <input required type="number" className="form-control" placeholder="Review for College" name="reviews" value={formData.reviews} onChange={handleInputChange} />
             </div>
             <div className="form-group">
               <label className="add-course-label">Placement Companies</label>
-              <input type="text" className="form-control" placeholder="Placement Companies" name="companies" value={formData.companies} onChange={handleInputChange} />
+              <input required type="text" className="form-control" placeholder="Placement Companies" name="companies" value={formData.companies} onChange={handleInputChange} />
             </div>
             <div className="form-group">
               <label className="add-course-label">Highest Package</label>
-              <input type="text" className="form-control" placeholder="Highest Package" name="highestPackage" value={formData.highestPackage} onChange={handleInputChange} />
+              <input required type="text" className="form-control" placeholder="Highest Package" name="highestPackage" value={formData.highestPackage} onChange={handleInputChange} />
             </div>
             <div className="form-group">
               <label className="add-course-label">Average Package</label>
-              <input type="text" className="form-control" placeholder="Average Package" name="averagePackage" value={formData.averagePackage} onChange={handleInputChange} />
+              <input required type="text" className="form-control" placeholder="Average Package" name="averagePackage" value={formData.averagePackage} onChange={handleInputChange} />
             </div>
             <div className="form-group">
               <label className="add-course-label">Percentage Placed</label>
-              <input type="number" className="form-control" placeholder="Percentage Placed" name="percentagePlaced" value={formData.percentagePlaced} onChange={handleInputChange} />
+              <input required type="number" className="form-control" placeholder="Percentage Placed" name="percentagePlaced" value={formData.percentagePlaced} onChange={handleInputChange} />
             </div>
             {formData.youtubeVideos.map((video, index) => (
               <div className="form-group" key={index}>
                 <label>YouTube Video {index + 1}</label>
                 <input
                   type="text"
+                  required
                   className="form-control"
                   name={`youtubeVideos${index}`}
                   value={video}
@@ -220,6 +221,7 @@ const AddCollege = () => {
             <div className="form-group">
               <label>Category Selection</label>
               <select
+                required
                 className="form-control"
                 name="categories"
                 value={formData.categories}
@@ -237,6 +239,7 @@ const AddCollege = () => {
             <div className="form-group">
               <label>Course Selection</label>
               <select
+              required
                 className="form-control"
                 name="courses"
                 value={formData.courses}
@@ -252,7 +255,7 @@ const AddCollege = () => {
             </div>
             <div className="form-group">
               <label>Upload College Image</label>
-              <input type="file" className="form-control" onChange={handleImageChange} />
+              <input required type="file" className="form-control" onChange={handleImageChange}/>
               <small>Please upload an image with size 1920px x 200px.</small>
             </div>
             <button type="submit" className="btn btn-primary">Submit</button>
