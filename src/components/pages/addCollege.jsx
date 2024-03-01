@@ -9,17 +9,16 @@ const AddCollege = () => {
     name: "",
     about: "",
     placements: {
-      companies: "",
+      companies: [],
       highestPackage: "",
       averagePackage: "",
       percentagePlaced: ""
     },
     virtualTourLink: "",
-    youtubeVideos: [], // Assuming you have a way to input these
+    youtubeVideos: [],
     reviews: "",
-    courses: [] // This will be an array of selected course IDs
+    courses: []
   });
-  const [image, setImage] = useState(null);
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
@@ -36,7 +35,7 @@ const AddCollege = () => {
   }, []);
 
   const handleInputChange = (e) => {
-    if (e.target.name in formData.placements) {
+    if (["highestPackage", "averagePackage", "percentagePlaced"].includes(e.target.name)) {
       setFormData({
         ...formData,
         placements: {
@@ -49,41 +48,26 @@ const AddCollege = () => {
     }
   };
 
-  const handleEditorChange = (event, editor, name) => {
-    setFormData({ ...formData, [name]: editor.getData() });
-  };
-
-  const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
+  const handleEditorChange = (name, editorData) => {
+    setFormData({ ...formData, [name]: editorData });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const data = new FormData();
-    data.append("name", formData.name);
-    data.append("about", formData.about);
-    data.append("placements", JSON.stringify(formData.placements));
-    data.append("virtualTourLink", formData.virtualTourLink);
-    data.append("reviews", formData.reviews);
-    formData.courses.forEach(course => data.append("courses", course));
-    if (image) {
-      data.append("image", image);
-    }
-
+    
     try {
-      console.log(data);
-      await axios.post("https://api.gined.in/api/colleges", data, {
+      await axios.post("https://api.gined.in/api/colleges", formData, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          "Content-Type": "application/json",
         },
       });
       alert("College successfully saved!");
+      // Optionally, reset the form state here
     } catch (error) {
       console.error("Error saving college:", error);
       alert("Failed to save college.");
     }
-  };  
+  };
 
   return (
     <>
@@ -137,7 +121,7 @@ const AddCollege = () => {
           </div>
           <div className="form-group">
             <label>Upload College Image (1920px x 200px)</label>
-            <input type="file" className="form-control" onChange={handleImageChange} />
+            <input type="file" className="form-control" />
             <small>Please upload an image with size 1920px x 200px.</small>
           </div>
           <button type="submit" className="btn btn-primary">Submit</button>
