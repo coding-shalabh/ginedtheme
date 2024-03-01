@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import CourseHeader from "./course/header";
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 const AddCollege = () => {
 
@@ -21,6 +23,8 @@ const AddCollege = () => {
   });
 
   const [courses, setCourses] = useState([]);
+  const [categories, setCategories] = useState([]);
+
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -33,6 +37,18 @@ const AddCollege = () => {
     };
 
     fetchCourses();
+
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get("https://api.gined.in/api/categories");
+        setCategories(response.data);
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      }
+    };
+
+    fetchCategories();
+
   }, []);
 
   const handleInputChange = (e) => {
@@ -43,7 +59,15 @@ const AddCollege = () => {
         ...prevFormData,
         courses: selectedOptions
       }));
-    } else if (e.target.name.startsWith("youtubeVideos")) {
+    }else if (e.target.name === "categories") {
+      // Handle multiple selections for courses
+      const selectedOptions = Array.from(e.target.selectedOptions).map(option => option.value);
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        categories: selectedOptions
+      }));
+    }
+     else if (e.target.name.startsWith("youtubeVideos")) {
       // Handle YouTube video inputs
       const index = parseInt(e.target.name.replace("youtubeVideos", ""), 10);
       const newYoutubeVideos = [...formData.youtubeVideos];
@@ -95,7 +119,8 @@ try {
       virtualTourLink: "",
       youtubeVideos: ["", "", "", ""],
       reviews: "",
-      courses: []
+      categories: [],
+      courses: [],
     });
   } catch (error) {
     console.error('Error submitting form:', error.response ? error.response.data : error);
@@ -116,8 +141,14 @@ try {
             </div>
             <div className="form-group">
               <label>About the College</label>
-              <textarea className="form-control" name="about" placeholder="About College" value={formData.about} onChange={handleInputChange} ></textarea>
-            </div>
+              <CKEditor
+                    editor={ClassicEditor}
+                    data={formData.about}
+                    onChange={(event, editor) => {
+                      const data = editor.getData();
+                      setFormData((prev)=> ({...prev, about: data}));
+                    }}
+                  /></div>
             <div className="form-group">
               <label className="add-course-label">Short Description</label>
               <textarea className="form-control" placeholder="Short Description for College" name="excerpt" value={formData.excerpt} onChange={handleInputChange} ></textarea>
@@ -161,6 +192,23 @@ try {
             ))}
 
             <div className="form-group">
+              <label>Category Selection</label>
+              <select
+                className="form-control"
+                name="categories"
+                value={formData.categories}
+                onChange={handleInputChange}
+                multiple={true} // Allow multiple selections
+              >
+                <option value="" disabled>Select categories</option>
+                {categories.map(category => (
+                  <option key={category._id} value={category._id}>{category.title}</option>
+                ))}
+              </select>
+              <small>Hold down the Ctrl (windows) / Command (Mac) button to select multiple options.</small>
+            </div>  
+
+            <div className="form-group">
               <label>Course Selection</label>
               <select
                 className="form-control"
@@ -176,11 +224,11 @@ try {
               </select>
               <small>Hold down the Ctrl (windows) / Command (Mac) button to select multiple options.</small>
             </div>
-            <div className="form-group">
+            {/* <div className="form-group">
               <label>Upload College Image (1920px x 200px)</label>
               <input type="file" className="form-control" />
               <small>Please upload an image with size 1920px x 200px.</small>
-            </div>
+            </div> */}
             <button type="submit" className="btn btn-primary">Submit</button>
           </form>
         </fieldset>
