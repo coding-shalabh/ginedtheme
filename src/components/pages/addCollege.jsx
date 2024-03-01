@@ -8,14 +8,16 @@ const AddCollege = () => {
   const [formData, setFormData] = useState({
     name: "",
     about: "",
-    shortDescription: "",
+    placements: {
+      companies: "",
+      highestPackage: "",
+      averagePackage: "",
+      percentagePlaced: ""
+    },
     virtualTourLink: "",
-    review: "",
-    placementCompanies: "",
-    highestPackage: "",
-    averagePackage: "",
-    percentagePlaced: "",
-    courses: "" // Assuming this is an array of course IDs
+    youtubeVideos: [], // Assuming you have a way to input these
+    reviews: "",
+    courses: [] // This will be an array of selected course IDs
   });
   const [image, setImage] = useState(null);
   const [courses, setCourses] = useState([]);
@@ -34,7 +36,17 @@ const AddCollege = () => {
   }, []);
 
   const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (e.target.name in formData.placements) {
+      setFormData({
+        ...formData,
+        placements: {
+          ...formData.placements,
+          [e.target.name]: e.target.value
+        }
+      });
+    } else {
+      setFormData({ ...formData, [e.target.name]: e.target.value });
+    }
   };
 
   const handleEditorChange = (event, editor, name) => {
@@ -48,37 +60,30 @@ const AddCollege = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const jsonPayload = JSON.stringify({
-      ...formData,
-      placements: {
-        companies: formData.placementCompanies.split(","), // Assuming placementCompanies is a comma-separated string
-        highestPackage: formData.highestPackage,
-        averagePackage: formData.averagePackage,
-        percentagePlaced: formData.percentagePlaced,
-      },
-      courses: formData.courses, // Assuming courses is a comma-separated string of course IDs
-    });
-
     const data = new FormData();
-    data.append("jsonPayload", jsonPayload);
+    data.append("name", formData.name);
+    data.append("about", formData.about);
+    data.append("placements", JSON.stringify(formData.placements));
+    data.append("virtualTourLink", formData.virtualTourLink);
+    data.append("reviews", formData.reviews);
+    formData.courses.forEach(course => data.append("courses", course));
     if (image) {
       data.append("image", image);
     }
 
     try {
+      console.log(data);
       await axios.post("https://api.gined.in/api/colleges", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
       alert("College successfully saved!");
-      // Optionally, reset the form state here
     } catch (error) {
       console.error("Error saving college:", error);
       alert("Failed to save college.");
     }
-  };
-
+  };  
 
   return (
     <>
