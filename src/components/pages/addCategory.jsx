@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios'; // Make sure to install axios
 import TextEditor from './course/addCourse/editor';
 import CourseHeader from './course/header';
 
@@ -6,10 +7,26 @@ const AddCategory = () => {
   const [categoryTitle, setCategoryTitle] = useState('');
   const [categoryDescription, setCategoryDescription] = useState('');
 
-  const saveCategory = () => {
-    // Implement save logic here
-    console.log('Saving Category:', categoryTitle, categoryDescription);
-    // Make an API call to save the category
+  const saveCategory = async (e) => {
+    e.preventDefault(); // Prevent form from causing a page reload
+
+    const categoryData = {
+      title: categoryTitle,
+      description: categoryDescription,
+    };
+
+    try {
+      // Make an API call to save the category
+      const response = await axios.post('https://api.gined.in/api/categories/', categoryData);
+      console.log('Category Saved Successfully:', response.data);
+      // Clear the form fields after successful submission
+      setCategoryTitle('');
+      setCategoryDescription('');
+      // Optionally, redirect or show a success message
+    } catch (error) {
+      console.error('Error saving category:', error.response ? error.response.data : error);
+      // Optionally, handle errors, such as displaying an error message
+    }
   };
 
   const handleTitleChange = (e) => {
