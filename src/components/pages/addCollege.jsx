@@ -69,6 +69,7 @@ const AddCollege = () => {
     <>
       <div>
         <CourseHeader />
+        <fieldset style={{ marginTop: "20px", width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }} id="first">
         <form onSubmit={handleSubmit}>
           {/* Form fields here */}
           <div className="form-group">
@@ -121,6 +122,7 @@ const AddCollege = () => {
           </div>
           <button type="submit" className="btn btn-primary">Submit</button>
         </form>
+        </fieldset>
       </div>
     </>
   );
