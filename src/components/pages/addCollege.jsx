@@ -43,7 +43,12 @@ const AddCollege = () => {
   };
 
   const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      setImage(reader.result);
+    };
   };
 
   const handleSubmit = async (e) => {
@@ -57,6 +62,7 @@ const AddCollege = () => {
       await axios.post("https://api.gined.in/api/colleges", data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
+      console.log(data);
       alert("College successfully saved!");
       // Optionally, reset the form state here
     } catch (error) {
