@@ -1,51 +1,85 @@
 import React, { useEffect, useState } from "react";
-import TextEditor from "./course/addCourse/editor";
-import CourseHeader from "./course/header";
+import axios from "axios";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import CourseHeader from "./course/header"; // Ensure this path is correct
 
-const AddCategory = () => {
-  
-    const [courses, setCourses] = useState([]);
-  const [selectedCourse, setSelectedCourse] = useState('');
+const AddCollege = () => {
+  const [formData, setFormData] = useState({
+    collegeName: "",
+    aboutCollege: "",
+    shortDescription: "",
+    virtualTourLink: "",
+    review: "",
+    placementCompanies: "",
+    highestPackage: "",
+    averagePackage: "",
+    percentagePlaced: "",
+    selectedCourse: ""
+  });
+  const [courses, setCourses] = useState([]);
+  const [image, setImage] = useState(null);
 
+  // Fetch courses for the dropdown
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch('https://api.gined.in/api/colleges/');
-        const data = await response.json();
+        const { data } = await axios.get("https://api.gined.in/api/courses");
         setCourses(data);
       } catch (error) {
-        console.error('Failed to fetch courses:', error);
+        console.error("Error fetching courses:", error);
       }
     };
 
     fetchCourses();
   }, []);
 
-  const saveCategory = (event) => {
-    event.preventDefault();
-    alert("College saved!");
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleEditorChange = (event, editor, name) => {
+    setFormData({ ...formData, [name]: editor.getData() });
+  };
+
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const data = new FormData();
+    Object.entries(formData).forEach(([key, value]) => data.append(key, value));
+    if (image) data.append("image", image);
+
+    try {
+      await axios.post("https://api.gined.in/api/colleges", data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      alert("College successfully saved!");
+      // Optionally, reset the form state here
+    } catch (error) {
+      console.error("Error saving college:", error.response?.data || error);
+      alert("Failed to save college.");
+    }
+  };
 
   return (
     <>
       <div>
         <CourseHeader />
-        <fieldset style={{ marginTop: '20px', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }} id="first">
-          <div style={{ width: '50%' }} className="add-course-info">
-            <div className="add-course-form">
-              <form action="#" onSubmit={saveCategory}>
-                <div className="form-group">
-                  <label className="add-course-label">College Name</label>
-                  <input type="text" className="form-control" placeholder="College Name" />
-                </div>
-                <div className="form-group">
-                  <label className="add-course-label">About the College</label>
-                  <div id="editor">
-                  <TextEditor />
-                </div>
-                </div>
-                <div className="form-group">
+        <form onSubmit={handleSubmit}>
+          {/* Form fields here */}
+          <div className="form-group">
+            <label>College Name</label>
+            <input type="text" name="collegeName" className="form-control" value={formData.collegeName} onChange={handleInputChange} />
+          </div>
+          <div className="form-group">
+            <label>About the College</label>
+            <CKEditor editor={ClassicEditor} data={formData.aboutCollege} onChange={(event, editor) => handleEditorChange(event, editor, "aboutCollege")} />
+          </div>
+          <div className="form-group">
                   <label className="add-course-label">Short Description</label>
                   <textarea className="form-control" placeholder="Short Description for College"></textarea>
                 </div>
@@ -73,35 +107,23 @@ const AddCategory = () => {
                   <label className="add-course-label">Percentage Placed</label>
                   <input type="number" className="form-control" placeholder="Percentage Placed" />
                 </div>
-                <div className="form-group">
-                  <label className="add-course-label">Select Course</label>
-                  <select
-                    className="form-control"
-                    value={selectedCourse}
-                    onChange={(e) => setSelectedCourse(e.target.value)}
-                  >
-                    <option value="">Select a course</option>
-                    {courses.map((course) => (
-                      <option key={course.id} value={course.id}>
-                        {course.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                {/* Repeat for other fields as necessary */}
-                <div className="widget-btn">
-                  <button type="submit" className="btn btn-info-light">
-                    Save College
-                  </button>
-                </div>
-              </form>
-            </div>
+          <div className="form-group">
+            <label>Course Selection</label>
+            <select className="form-control" name="selectedCourse" value={formData.selectedCourse} onChange={handleInputChange}>
+              <option value="">Select a course</option>
+              {courses.map(course => <option key={course._id} value={course._id}>{course.title}</option>)}
+            </select>
           </div>
-          <p>Testing</p>
-        </fieldset>
+          <div className="form-group">
+            <label>Upload College Image (1920px x 200px)</label>
+            <input type="file" className="form-control" onChange={handleImageChange} />
+            <small>Please upload an image with size 1920px x 200px.</small>
+          </div>
+          <button type="submit" className="btn btn-primary">Submit</button>
+        </form>
       </div>
     </>
   );
 };
 
-export default AddCategory;
+export default AddCollege;
