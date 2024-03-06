@@ -19,6 +19,7 @@ const AddCategory = () => {
     try {
       const response = await axios.post('https://api.gined.in/api/categories/', categoryData);
       console.log('Category Saved Successfully:', response.data);
+      alert('Category Saved Successfully');
       setCategoryTitle('');
       setCategoryDescription('');
     } catch (error) {

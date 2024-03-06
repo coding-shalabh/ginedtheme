@@ -21,6 +21,7 @@ const AddCourse = () => {
       // Make a POST request to your backend API to save the course
       const response = await axios.post("https://api.gined.in/api/courses/", courseData);
       console.log("Course Saved Successfully:", response.data);
+      alert('Course Saved Successfully');
       // Optionally, reset the form fields or handle success (e.g., show success message, redirect)
     } catch (error) {
       console.error("Error saving course:", error.response ? error.response.data : error.message);
