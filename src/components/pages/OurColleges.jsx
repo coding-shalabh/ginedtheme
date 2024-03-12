@@ -30,12 +30,14 @@ const OurColleges = () => {
         { label: "published 3", value: "published 3" },
     ];
 
-    const Category = [
-        { label: "MBA", value: "MBA" },
-        { label: "BBA", value: "BBA" },
-        { label: "MSC", value: "MSC" },
-        { label: "BDS", value: "BDS" },
-    ];
+    // const Category = [
+    //     { label: "MBA", value: "MBA" },
+    //     { label: "BBA", value: "BBA" },
+    //     { label: "MSC", value: "MSC" },
+    //     { label: "BDS", value: "BDS" },
+    // ];
+
+
 
     const [input, setInput] = useState(null);
     const [viewMode, setViewMode] = useState('grid');
@@ -45,19 +47,36 @@ const OurColleges = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [filteredColleges, setFilteredColleges] = useState(collegeData);
+    const [category, setCategory] = useState([]);
 
 
-      useEffect(() => {
-        const fetchData = async () => {
-            const data = await fetch('https://gined.in/education/wp-json/wp/v2/colleges');
-            const queryData = await data.json();
-            setCollegeData([...queryData]);
-            // Apply initial filtering based on categories right after fetching
-            filterColleges([...queryData], selectedCategories);
-        };
+
+    useEffect(()=>{
+        fetchCategory();
+    },[])
+
+    const fetchCategory = async ()=> {
+        try {
+            const res = await fetch('https://api.gined.in/api/categories/');
+            const data = await res.json()
+            setCategory(data);
+            console.log(data);
+          } catch (error) {
+            console.error(error);
+          }
+    }
+
+    //   useEffect(() => {
+    //     const fetchData = async () => {
+    //         const data = await fetch('https://gined.in/education/wp-json/wp/v2/colleges');
+    //         const queryData = await data.json();
+    //         setCollegeData([...queryData]);
+    //         // Apply initial filtering based on categories right after fetching
+    //         filterColleges([...queryData], selectedCategories);
+    //     };
     
-        fetchData();
-    }, []);
+    //     fetchData();
+    // }, []);
     
     useEffect(() => {
         // Apply filtering whenever selected categories change
@@ -75,7 +94,7 @@ const OurColleges = () => {
         // Further filter by search term
         if (searchTerm) {
             filtered = filtered.filter(college =>
-                college.title.rendered.toLowerCase().includes(searchTerm.toLowerCase())
+                college.name.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
     
@@ -88,7 +107,7 @@ const OurColleges = () => {
     };
 
     const filteredCollegeData = filteredColleges.filter(item =>
-        item.title.rendered.toLowerCase().includes(searchTerm.toLowerCase())
+        item.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     // Calculate the current items for the page
@@ -130,7 +149,24 @@ const OurColleges = () => {
       useEffect(() => {
         // Apply filtering whenever searchTerm changes
         filterColleges(collegeData, selectedCategories, searchTerm);
-    }, [searchTerm]); //    
+    }, [searchTerm]); //   
+    
+    useEffect(()=> {
+        fetchCollege();
+      },[])
+    
+      const fetchCollege = async ()=> {
+        try {
+          
+          const res = await fetch('https://api.gined.in/api/colleges/');
+          const data = await res.json();
+          setCollegeData(data);
+          console.log(data);
+    
+        } catch (error) {
+          console.log(error)
+        }
+      }
 
     return (
         <>
@@ -259,15 +295,15 @@ const OurColleges = () => {
                                                     </div>
 
                                                     {
-                                                        Category.map((item, index) => {
+                                                        category.map((item, index) => {
                                                             return (
                                                                 <>
                                                                     <div key={index}>
                                                                         <label className="custom_check">
                                                                             <input type="checkbox" name="select_specialist" 
-                                                                                onChange={(e) => handleCategoryChange(item.label, e.target.checked)}
+                                                                                onChange={(e) => handleCategoryChange(item.title, e.target.checked)}
                                                                             />
-                                                                            <span className="checkmark" /> {item.label}
+                                                                            <span className="checkmark" /> {item.title}
                                                                         </label>
                                                                     </div>
                                                                 </>
@@ -281,7 +317,7 @@ const OurColleges = () => {
                                         </div>
                                         {/* /Search Filter */}
                                         {/* Search Filter */}
-                                        <div className="card search-filter">
+                                        {/* <div className="card search-filter">
                                             <div className="card-body">
                                                 <div className="filter-widget mb-0">
                                                     <div className="categories-head d-flex align-items-center">
@@ -318,7 +354,7 @@ const OurColleges = () => {
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> */}
                                         {/* /Search Filter */}
                                         {/* Search Filter */}
                                         <div className="card search-filter ">

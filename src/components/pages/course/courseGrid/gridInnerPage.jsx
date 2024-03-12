@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Course10, Icon1 } from "../../../imagepath";
+
 
 const rating = [
   {
@@ -60,6 +61,8 @@ const location = "Bengaluru, India"
 
 const GridInnerPage = ({ collegeData }) => {
 
+  const navigate = useNavigate();
+
 
 
   function truncateTextToWordLimit(text, limit = 24) {
@@ -68,6 +71,10 @@ const GridInnerPage = ({ collegeData }) => {
       return words.slice(0, limit).join(' ') + '...';
     }
     return text;
+  }
+
+  const handleNavigate = (item)=> {
+    navigate(`/colleges/${item.name.replace(/ /g, '-')}`, {state: {item}})
   }
 
   return (
@@ -84,17 +91,17 @@ const GridInnerPage = ({ collegeData }) => {
             return (
               <>
 
-                <div className="col-lg-4 col-md-6 d-flex">
+                <div className="col-lg-4 col-md-6 d-flex" style={{cursor: 'pointer'}}>
                   <div className="course-box course-design d-flex ">
                     <div className="product">
                       <div className="product-img">
-                        <Link to="/course-details">
+                      <div onClick={()=> handleNavigate(item)}>
                           <img
                             className="img-fluid"
                             alt=""
                             src={Course10}
                           />
-                        </Link>
+                        </div>
                         {/* <div className="price">
                           <h3>
                             $300 <span>$99.00</span>
@@ -126,12 +133,13 @@ const GridInnerPage = ({ collegeData }) => {
                           </div>
                         </div>
                         <h3 className="title">
-                          <Link to="/course-details">
-                            {item.title.rendered}
-                          </Link>
+                        <div onClick={()=> handleNavigate(item)}>
+
+                            {item.name}
+                          </div>
                         </h3>
-                        <div className="excerpt">
-                          {truncateTextToWordLimit(item.excerpt.rendered, 30)}
+                        <div className="excerpt" style={{fontSize: '14px'}}>
+                          {truncateTextToWordLimit(item.excerpt, 15 )}
                         </div>
                         <div className="course-info d-flex align-items-center">
                           <div className="rating-img d-flex align-items-center">
@@ -161,9 +169,9 @@ const GridInnerPage = ({ collegeData }) => {
                           </span>
                         </div>
                         <div className="all-btn all-category d-flex align-items-center">
-                          <Link to="/registration" className="btn btn-primary">
+                        <div onClick={()=> handleNavigate(item)} className='btn btn-primary'>
                             Apply Now
-                          </Link>
+                          </div>
                         </div>
                       </div>
                     </div>

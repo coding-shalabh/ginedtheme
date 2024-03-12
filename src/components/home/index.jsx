@@ -57,23 +57,28 @@ import "aos/dist/aos.css";
 import { useEffect } from "react";
 import CountUp from "react-countup";
 
-const options = [
-  { label: "Category", value: "Category" },
-  { label: "Angular", value: "Angular" },
-  { label: "Node Js", value: "Node Js" },
-  { label: "React", value: "React" },
-  { label: "Python", value: "Python" },
-];
+// const options = [
+//   { label: "Category", value: "Category" },
+//   { label: "Angular", value: "Angular" },
+//   { label: "Node Js", value: "Node Js" },
+//   { label: "React", value: "React" },
+//   { label: "Python", value: "Python" },
+// ];
 
 export const Home = () => {
-  const [setValue] = useState(null);
+  // const [setValue] = useState(null);
   const [isActive, setIsActive] = useState(false);
   const [isActivetwo, setIsActivetwo] = useState(false);
   const [isActivethree, setIsActivethree] = useState(false);
   const [isActivefour, setIsActivefour] = useState(false);
   const [isActivefive, setIsActivefive] = useState(false);
   const [isActivesix, setIsActivesix] = useState(false);
+  const [searchOptions, setSearchOptions] = useState([]);
+  const [selectedOption, setSelectedOption] = useState(null);
 
+const handleChange = (selectedOption) => {
+  setSelectedOption(selectedOption);
+};
   const toggleClass = () => {
     setIsActive(!isActive);
   };
@@ -92,6 +97,21 @@ export const Home = () => {
   const toggleClasssix = () => {
     setIsActivesix(!isActivesix);
   };
+
+  useEffect(() => {
+    fetchSearchCategory();
+  }, [])
+
+  const fetchSearchCategory = async () => {
+    try {
+      const res = await fetch('https://api.gined.in/api/categories/');
+      const data = await res.json()
+      setSearchOptions(data);
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   const formatValue = (value) => `${Math.floor(value)}`;
 
@@ -140,6 +160,9 @@ export const Home = () => {
     AOS.init({ duration: 1000, once: true });
   }, []);
 
+  useEffect(() => {
+    console.log(searchOptions);
+  }, [searchOptions])
   return (
     <>
       <div className="main-wrapper">
@@ -154,9 +177,9 @@ export const Home = () => {
               <div className="col-md-7">
                 <div className="home-slide-face aos" data-aos="fade-up">
                   <div className="home-slide-text ">
-                    <h5>The Leader in Online Learning</h5>
-                    <h1>Engaging &amp; Accessible Online Courses For All</h1>
-                    <p>Own your future learning new skills online</p>
+                    <h5>The Leader in Education</h5>
+                    <h1>Your Education, Our Priority Your Career, Our Commitment</h1>
+                    <p></p>
                   </div>
                   <div className="banner-content">
                     <form className="form" action="/course-list">
@@ -170,14 +193,15 @@ export const Home = () => {
                           />
                           <span className="drop-detail">
                             <Select
-                              // className="select2-container"
-                              options={options}
-                              value={options.value}
-                              defaultValue={options[0]}
+                              options={searchOptions.map(option => ({
+                                value: option._id,
+                                label: option.title
+                              }))}
+                              value={selectedOption} // Make sure to set the selected option state
                               placeholder="Category"
-                              onChange={setValue}
+                              onChange={handleChange}
                               styles={style}
-                            ></Select>
+                            />
                           </span>
                           <button className="btn sub-btn" type="submit">
                             <i className="fas fa-arrow-right" />
@@ -339,6 +363,7 @@ export const Home = () => {
                     </div>
                   </div>
                 </div>
+
               </div>
             </div>
           </div>

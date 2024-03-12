@@ -1,11 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CourseHeader from "../header";
 import InnerBanner from "../../../../assets/img/inner-banner.jpg";
 import DetailsContent from "./detailsContent";
-import { Icon1, People, Timer, User1 } from "../../../imagepath";
+import { Icon1, People } from "../../../imagepath";
 import Footer from "../../../footer";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+
 const CourseDetails = () => {
+
+  const location = useLocation();
+  const {item} = location.state;
+
+  useEffect(()=> {
+
+      console.log(item)
+  },[])
+
   return (
     <>
       <div className="main-wrapper">
@@ -22,13 +32,13 @@ const CourseDetails = () => {
                         <Link to="/">Home</Link>
                       </li>
                       <li className="breadcrumb-item" aria-current="page">
-                        Courses
+                        Colleges
                       </li>
                       <li className="breadcrumb-item" aria-current="page">
-                        All Courses
+                        All Colleges
                       </li>
                       <li className="breadcrumb-item" aria-current="page">
-                        The Complete Web Developer Course 2.0
+                        {item.name}
                       </li>
                     </ol>
                   </nav>
@@ -45,7 +55,7 @@ const CourseDetails = () => {
           <div className="container">
             <div className="row">
               <div className="col-lg-8">
-                <div className="instructor-wrap border-bottom-0 m-0">
+                {/* <div className="instructor-wrap border-bottom-0 m-0">
                   <div className="about-instructor align-items-center">
                     <div className="abt-instructor-img">
                       <Link to="/instructor-profile">
@@ -74,24 +84,22 @@ const CourseDetails = () => {
                     </div>
                   </div>
                   <span className="web-badge mb-3">WEB DEVELPMENT</span>
-                </div>
-                <h2>The Complete Web Developer Course 2.0</h2>
-                <p>
-                  Learn Web Development by building 25 websites and mobile apps
-                  using HTML, CSS, Javascript, PHP, Python, MySQL &amp; more!
+                </div> */}
+                <h2>{item.name}</h2>
+                <p>{item.excerpt}
                 </p>
                 <div className="course-info d-flex align-items-center border-bottom-0 m-0 p-0">
                   <div className="cou-info">
                     <img src={Icon1} alt="" />
-                    <p>12+ Lesson</p>
+                    <p>{`${item.courses.length}+ Courses`}</p>
                   </div>
-                  <div className="cou-info">
+                  {/* <div className="cou-info">
                     <img src={Timer} alt="" />
                     <p>9hr 30min</p>
-                  </div>
+                  </div> */}
                   <div className="cou-info">
                     <img src={People} alt="" />
-                    <p>32 students enrolled</p>
+                    <p>1000+ Students</p>
                   </div>
                 </div>
               </div>
@@ -99,7 +107,7 @@ const CourseDetails = () => {
           </div>
         </div>
 
-        <DetailsContent/>
+        <DetailsContent content={item}/>
 
         <Footer/>
 

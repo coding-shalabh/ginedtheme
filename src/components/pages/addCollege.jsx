@@ -25,34 +25,29 @@ const AddCollege = () => {
 
   const [courses, setCourses] = useState([]);
   const [categories, setCategories] = useState([]);
-  // const [image, setImage] = useState("");
-
+  const [showCourseDropdown, setShowCourseDropdown] = useState(false);
+  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
 
 
   useEffect(() => {
-    const fetchCourses = async () => {
+    const fetchCoursesAndCategories = async () => {
       try {
-        const response = await axios.get("https://api.gined.in/api/courses");
-        setCourses(response.data);
+        const coursesResponse = await axios.get("https://api.gined.in/api/courses");
+        setCourses(coursesResponse.data);
+        const categoriesResponse = await axios.get("https://api.gined.in/api/categories");
+        setCategories(categoriesResponse.data);
       } catch (error) {
-        console.error("Error fetching courses:", error);
+        console.error("Error fetching data:", error);
       }
     };
 
-    fetchCourses();
-
-    const fetchCategories = async () => {
-      try {
-        const response = await axios.get("https://api.gined.in/api/categories");
-        setCategories(response.data);
-      } catch (error) {
-        console.error("Error fetching courses:", error);
-      }
-    };
-
-    fetchCategories();
-
+    fetchCoursesAndCategories();
   }, []);
+
+  // const handleInputChange = (e) => {
+  //   // Handling inputs for text and checkboxes
+  //   setFormData({ ...formData, [e.target.name]: e.target.value });
+  // };
 
   const handleInputChange = (e) => {
     if (e.target.name === "courses") {
@@ -80,6 +75,7 @@ const AddCollege = () => {
         youtubeVideos: newYoutubeVideos
       }));
     } else if (["highestPackage", "averagePackage", "percentagePlaced", "companies"].includes(e.target.name)) {
+      console.log(e.target.name, e.target.value);
       setFormData({
         ...formData,
         placements: {
@@ -95,6 +91,27 @@ const AddCollege = () => {
         [e.target.name]: e.target.value
       }));
     }
+  };
+
+  // Function to toggle course selection
+  const handleSelectCourse = (courseId) => {
+    // Handling course selection
+    const isCourseSelected = formData.courses.includes(courseId);
+    const updatedCourses = isCourseSelected
+      ? formData.courses.filter(id => id !== courseId)
+      : [...formData.courses, courseId];
+    setFormData({ ...formData, courses: updatedCourses });
+  };
+
+
+  // Function to toggle category selection
+  const handleSelectCategory = (categoryId) => {
+    // Handling category selection
+    const isCategorySelected = formData.categories.includes(categoryId);
+    const updatedCategories = isCategorySelected
+      ? formData.categories.filter(id => id !== categoryId)
+      : [...formData.categories, categoryId];
+    setFormData({ ...formData, categories: updatedCategories });
   };
 
 
@@ -113,7 +130,7 @@ const AddCollege = () => {
         // Set the converted base64 string to your state, assuming you have a state to hold it
         // For example, setImageBase64(reader.result);
         // setImage(reader.result); // setImage should be a state setter function for your base64 image data
-        setFormData((prev)=> ({...prev, image: reader.result}));
+        setFormData((prev) => ({ ...prev, image: reader.result }));
       };
       reader.readAsDataURL(file);
     }
@@ -123,7 +140,7 @@ const AddCollege = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-
+    console.log(formData);
 
     try {
       const response = await axios.post('https://api.gined.in/api/colleges', formData);
@@ -219,43 +236,43 @@ const AddCollege = () => {
             ))}
 
             <div className="form-group">
-              <label>Category Selection</label>
-              <select
-                required
-                className="form-control"
-                name="categories"
-                value={formData.categories}
-                onChange={handleInputChange}
-                multiple={true} // Allow multiple selections
-              >
-                <option value="" disabled>Select categories</option>
-                {categories.map(category => (
-                  <option key={category._id} value={category._id}>{category.title}</option>
-                ))}
-              </select>
-              <small>Hold down the Ctrl (windows) / Command (Mac) button to select multiple options.</small>
-            </div>
-
-            <div className="form-group">
-              <label>Course Selection</label>
-              <select
-              required
-                className="form-control"
-                name="courses"
-                value={formData.courses}
-                onChange={handleInputChange}
-                multiple={true} // Allow multiple selections
-              >
-                <option value="" disabled>Select courses</option>
-                {courses.map(course => (
-                  <option key={course._id} value={course._id}>{course.title}</option>
-                ))}
-              </select>
-              <small>Hold down the Ctrl (windows) / Command (Mac) button to select multiple options.</small>
-            </div>
+        <button className="btn btn-secondary dropdown-toggle w-100" type="button" onClick={() => setShowCourseDropdown(!showCourseDropdown)}>
+          Select Courses
+        </button>
+        {showCourseDropdown && (
+          <div className="dropdown-menu show w-100">
+            {courses.map((course) => (
+              <a key={course._id} className="dropdown-item" href="#" onClick={(e) => {
+                e.preventDefault();
+                handleSelectCourse(course._id);
+              }}>
+                <input type="checkbox" checked={formData.courses.includes(course._id)} readOnly /> {course.title}
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+      {/* Dropdown for categories */}
+      <div className="form-group">
+        <button className="btn btn-secondary dropdown-toggle w-100" type="button" onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}>
+          Select Categories
+        </button>
+        {showCategoryDropdown && (
+          <div className="dropdown-menu show w-100">
+            {categories.map((category) => (
+              <a key={category._id} className="dropdown-item" href="#" onClick={(e) => {
+                e.preventDefault();
+                handleSelectCategory(category._id);
+              }}>
+                <input type="checkbox" checked={formData.categories.includes(category._id)} readOnly /> {category.title}
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
             <div className="form-group">
               <label>Upload College Image</label>
-              <input required type="file" className="form-control" onChange={handleImageChange}/>
+              <input required type="file" className="form-control" onChange={handleImageChange} />
               <small>Please upload an image with size 1920px x 200px.</small>
             </div>
             <button type="submit" className="btn btn-primary">Submit</button>

@@ -286,6 +286,10 @@ const Approuter = () => {
         <Route path="/purchase-history" element={<PurchaseHistory />} />
         <Route path="/deposit-student" element={<DepositStudent />} />
         <Route path="/transactions-student" element={<TransactionStudent />} />
+
+        {/* Individual Course Pages */}
+        <Route path="/colleges/*" element={<CourseDetails />} />
+
       </Routes>
     </BrowserRouter>
   );

@@ -1,16 +1,77 @@
 // import Collapse from 'react-bootstrap/Collapse';
-import React from "react";
+import React, { useEffect } from "react";
+import PropTypes from 'prop-types';
 import { useState } from "react";
-import { Chapter, Chart, Cloud, Icon1, Icon2, Import, Key, Mobile, People, Play, Teacher, Timer2, User1, Users, Video, Video2 } from "../../../imagepath";
+import { Chapter, Chart, Cloud, Icon1, Import, Key, Mobile, Play, Teacher, Timer2, User1, Users, Video, Video2 } from "../../../imagepath";
 import { Link } from 'react-router-dom';
 import FeatherIcon from "feather-icons-react";
+import { Course10 } from "../../../imagepath";
 
-const DetailsContent = () => {
 
-    const [open, setOpen] = useState(false);
-    const [open2, setOpen2] = useState(false);
-    const [open3] = useState(false);
-    const [open4] = useState(false);
+const DetailsContent = ({ content }) => {
+
+  // const [open, setOpen] = useState(false);
+  // const [open2, setOpen2] = useState(false);
+  // const [open3] = useState(false);
+  // const [open4] = useState(false);
+  const [data, setData] = useState(content);
+  const [visibleCourses, setVisibleCourses] = useState(3); // Number of courses initially visible
+  const [courses, setCourses] = useState(content.courses); // Assuming content.courses contains the list of courses
+
+  const handleLoadMore = () => {
+    setVisibleCourses(prev => prev + 3); // Increase the number of visible courses by 3 when "Load More" is clicked
+  };
+
+  useEffect(() => {
+    if (content) {
+      setData(content);
+    }
+  }, [content]);
+
+  useEffect(() => {
+    // Fetch the array of course references
+    const fetchCourses = async () => {
+      try {
+
+        // Iterate through each reference and fetch course details
+        console.log(data.courses);
+        const courseDetailsPromises = data.courses.map(async (courseReference) => {
+          const courseRes = await fetch(`https://api.gined.in/api/courses/${courseReference}`);
+          const allcourses = await courseRes.json();
+          return allcourses
+        });
+
+        // Wait for all course detail requests to resolve
+        const courseDetails = await Promise.all(courseDetailsPromises);
+
+        // Set the state with the fetched course details
+        console.log(courseDetails);
+        setCourses(courseDetails);
+      } catch (error) {
+        console.error('Error fetching courses:', error);
+      }
+    };
+
+    fetchCourses();
+  }, []);
+
+
+  const handleRegistration = (course) => {
+    console.log(course);
+    alert(`You are sucessfully registered for ${course} at ${data.name}`)
+  }
+
+
+  // const truncateDescription = (description) => {
+
+  //   const words = description.split('');
+  //   if (words.length > 10) {
+  //     return words.slice(0, 20).join(' ') + '...'; // Concatenating with '...' to indicate truncation
+  //   } else {
+  //     return description;
+  //   }
+  // };
+
 
   return (
     <>
@@ -20,7 +81,8 @@ const DetailsContent = () => {
             <div className="col-lg-8">
               {/* Overview */}
               <div className="card overview-sec">
-                <div className="card-body">
+                <div className="card-body" dangerouslySetInnerHTML={{ __html: data.about }} />
+                {/* <div className="card-body">
                   <h5 className="subs-title">Overview</h5>
                   <h6>Course Description</h6>
                   <p>
@@ -72,7 +134,7 @@ const DetailsContent = () => {
                       No previous Adobe XD skills are needed.
                     </li>
                   </ul>
-                </div>
+                </div> */}
               </div>
               {/* /Overview */}
               {/* Course Content */}
@@ -80,13 +142,62 @@ const DetailsContent = () => {
                 <div className="card-body">
                   <div className="row">
                     <div className="col-sm-6">
-                      <h5 className="subs-title">Course Content</h5>
-                    </div>
-                    <div className="col-sm-6 text-sm-end">
-                      <h6>92 Lectures 10:56:11</h6>
+                      <h5 className="subs-title">List of available Courses</h5>
                     </div>
                   </div>
-                  <div className="course-card">
+
+                  {/* {List of all the courses card} */}
+                  <div className="row">
+                  {courses.slice(0, visibleCourses).map((course) => (
+            <div key={course._id} className="col-lg-4 col-md-6 d-flex" style={{ cursor: 'pointer' }}>
+              <div className="course-box course-design d-flex">
+                <div className="product">
+                  <div className="product-img">
+                    <div onClick={() => handleRegistration(course)}>
+                      <img
+                        className="img-fluid"
+                        alt=""
+                        src={Course10}
+                      />
+                    </div>
+                  </div>
+                  <div className="product-content">
+                    <div className="course-group d-flex">
+                      <div className="course-share d-flex align-items-center justify-content-center">
+                      </div>
+                    </div>
+                    <h3 className="title">
+                      <div onClick={() => handleRegistration(course)}>
+                        {course.title}
+                      </div>
+                    </h3>
+                    <div className="excerpt" style={{ fontSize: '14px' }} dangerouslySetInnerHTML={{ __html: (course.description) }} />
+                    <div className="course-info d-flex align-items-center">
+                      <div className="rating-img d-flex align-items-center">
+                        <img src={Icon1} alt="" />
+                        <p>{course.location}</p> {/* Assuming location is a property of each course */}
+                      </div>
+                    </div>
+                    <div className="all-btn all-category d-flex align-items-center">
+                      <div onClick={() => handleRegistration(course.title)} className='btn btn-primary'>
+                        Apply Now
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+                  </div>
+                  {visibleCourses < courses.length && (
+          <div className="row">
+            <div className="col-12 d-flex justify-content-center">
+              <button className="btn btn-primary" onClick={handleLoadMore}>Load More</button>
+            </div>
+          </div>
+        )}
+
+                  {/* <div className="course-card">
                     <h6 className="cou-title">
                       <Link className="collapsed" data-bs-toggle="collapse" to="#collapseOne" aria-expanded={open} onClick={()=> setOpen(!open)} aria-controls="example-collapse-text">
                         In which areas do you operate?
@@ -409,12 +520,12 @@ const DetailsContent = () => {
                       </ul>
                     </div>
                     
-                  </div>
+                  </div> */}
                 </div>
               </div>
               {/* /Course Content */}
               {/* Instructor */}
-              <div className="card instructor-sec">
+              {/* <div className="card instructor-sec">
                 <div className="card-body">
                   <h5 className="subs-title">About the instructor</h5>
                   <div className="instructor-wrap">
@@ -484,7 +595,7 @@ const DetailsContent = () => {
                     <li>5. Worldwide</li>
                   </ul>
                 </div>
-              </div>
+              </div> */}
               {/* /Instructor */}
               {/* Reviews */}
               <div className="card review-sec">
@@ -528,8 +639,8 @@ const DetailsContent = () => {
                   </p>
                   <Link to="#" className=" btn-reply">
                     {/* <i className="feather-corner-up-left" /> */}
-                    <FeatherIcon icon="corner-up-left"/>
-                     Reply
+                    <FeatherIcon icon="corner-up-left" />
+                    Reply
                   </Link>
                 </div>
               </div>
@@ -614,7 +725,7 @@ const DetailsContent = () => {
                               className=" btn btn-wish w-100"
                             >
                               {/* <i className="feather-heart" />  */}
-                              <FeatherIcon icon="heart"/>
+                              <FeatherIcon icon="heart" />
                               Add to Wishlist
                             </Link>
                           </div>
@@ -624,8 +735,8 @@ const DetailsContent = () => {
                               className="btn btn-wish w-100"
                             >
                               {/* <i className="feather-share-2" />  */}
-                              <FeatherIcon icon="share-2"/>
-                              
+                              <FeatherIcon icon="share-2" />
+
                               Share
                             </Link>
                           </div>
@@ -758,6 +869,10 @@ const DetailsContent = () => {
       </section>
     </>
   );
+};
+
+DetailsContent.propTypes = {
+  content: PropTypes.object.isRequired
 };
 
 export default DetailsContent;
