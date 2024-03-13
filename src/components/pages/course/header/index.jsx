@@ -122,7 +122,7 @@ const CourseHeader = () => {
                     </ul> */}
                   </li>
                   <li className="">
-                    <Link to="/our-courses">
+                    <Link to="/our-colleges">
                       Our Courses{" "}
                       {/* <i
                         className="fas fa-chevron-down "

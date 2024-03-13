@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import CourseHeader from "../header";
 import InnerBanner from "../../../../assets/img/inner-banner.jpg";
 import DetailsContent from "./detailsContent";
@@ -8,13 +8,45 @@ import { Link, useLocation } from "react-router-dom";
 
 const CourseDetails = () => {
 
+  // const [fetchData, setFetchData] = useState([]);
+  const [collegeData, setCollegeData] = useState('');
   const location = useLocation();
   const {item} = location.state;
+  
+  useEffect(() => {
+    const setUriEndpoint =
+        location.pathname.split("/")[0] === "colleges" ? "colleges" : "courses";
+    const collegeName = decodeURIComponent(location.pathname.split("/")[1]);
+      console.log("Woring");
+    const getData = async () => {
+        try {
+          console.log("sdsdsd");
+            // Fetch data for the college from the database
+            const res = await fetch(`https://api.gined.in/api/${setUriEndpoint}/${collegeName}`);
+            if (res.ok) {
+                const data = await res.json();
+                setCollegeData(data);
+                // Display the college details using the fetched data
+                console.log("College details:", data);
+            } else {
+                // Handle the case where the college is not found
+                console.error("College not found");
+            }
+        } catch (error) {
+            // Handle any network or server errors
+            console.error("Error fetching college data:", error);
+        }
 
-  useEffect(()=> {
+    };
+    if(item){
+      setCollegeData(item);
+      console.log(item);
+    }else {
+      getData();
+    }
+    
 
-      console.log(item)
-  },[])
+}, []);
 
   return (
     <>
@@ -38,7 +70,7 @@ const CourseDetails = () => {
                         All Colleges
                       </li>
                       <li className="breadcrumb-item" aria-current="page">
-                        {item.name}
+                        {collegeData.name}
                       </li>
                     </ol>
                   </nav>
@@ -85,13 +117,13 @@ const CourseDetails = () => {
                   </div>
                   <span className="web-badge mb-3">WEB DEVELPMENT</span>
                 </div> */}
-                <h2>{item.name}</h2>
-                <p>{item.excerpt}
+                <h2>{collegeData.name}</h2>
+                <p>{collegeData.excerpt}
                 </p>
                 <div className="course-info d-flex align-items-center border-bottom-0 m-0 p-0">
                   <div className="cou-info">
                     <img src={Icon1} alt="" />
-                    <p>{`${item.courses.length}+ Courses`}</p>
+                    {/* <p>{`${item.courses.length}+ Courses`}</p> */}
                   </div>
                   {/* <div className="cou-info">
                     <img src={Timer} alt="" />
@@ -106,8 +138,10 @@ const CourseDetails = () => {
             </div>
           </div>
         </div>
-
-        <DetailsContent content={item}/>
+        {
+          collegeData !== '' ? 
+        <DetailsContent content={collegeData}/> : <></>
+        }
 
         <Footer/>
 

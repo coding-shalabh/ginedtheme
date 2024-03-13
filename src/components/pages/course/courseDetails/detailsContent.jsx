@@ -2,13 +2,13 @@
 import React, { useEffect } from "react";
 import PropTypes from 'prop-types';
 import { useState } from "react";
-import { Chapter, Chart, Cloud, Icon1, Import, Key, Mobile, Play, Teacher, Timer2, User1, Users, Video, Video2 } from "../../../imagepath";
+import { Chapter, Chart, Cloud, Import, Key, Mobile, Play, Teacher, Timer2, User1, Users, Video, Video2 } from "../../../imagepath";
 import { Link } from 'react-router-dom';
 import FeatherIcon from "feather-icons-react";
-import { Course10 } from "../../../imagepath";
 
 
 const DetailsContent = ({ content }) => {
+
 
   // const [open, setOpen] = useState(false);
   // const [open2, setOpen2] = useState(false);
@@ -17,6 +17,12 @@ const DetailsContent = ({ content }) => {
   const [data, setData] = useState(content);
   const [visibleCourses, setVisibleCourses] = useState(3); // Number of courses initially visible
   const [courses, setCourses] = useState(content.courses); // Assuming content.courses contains the list of courses
+  const [openAccordionId, setOpenAccordionId] = useState(null);
+
+  const handleAccordionToggle = (accordionId) => {
+    setOpenAccordionId((prevId) => (prevId === accordionId ? null : accordionId));
+  };
+
 
   const handleLoadMore = () => {
     setVisibleCourses(prev => prev + 3); // Increase the number of visible courses by 3 when "Load More" is clicked
@@ -148,55 +154,43 @@ const DetailsContent = ({ content }) => {
 
                   {/* {List of all the courses card} */}
                   <div className="row">
-                  {courses.slice(0, visibleCourses).map((course) => (
-            <div key={course._id} className="col-lg-4 col-md-6 d-flex" style={{ cursor: 'pointer' }}>
-              <div className="course-box course-design d-flex">
-                <div className="product">
-                  <div className="product-img">
-                    <div onClick={() => handleRegistration(course)}>
-                      <img
-                        className="img-fluid"
-                        alt=""
-                        src={Course10}
-                      />
-                    </div>
-                  </div>
-                  <div className="product-content">
-                    <div className="course-group d-flex">
-                      <div className="course-share d-flex align-items-center justify-content-center">
-                      </div>
-                    </div>
-                    <h3 className="title">
-                      <div onClick={() => handleRegistration(course)}>
-                        {course.title}
-                      </div>
-                    </h3>
-                    <div className="excerpt" style={{ fontSize: '14px' }} dangerouslySetInnerHTML={{ __html: (course.description) }} />
-                    <div className="course-info d-flex align-items-center">
-                      <div className="rating-img d-flex align-items-center">
-                        <img src={Icon1} alt="" />
-                        <p>{course.location}</p> {/* Assuming location is a property of each course */}
-                      </div>
-                    </div>
-                    <div className="all-btn all-category d-flex align-items-center">
-                      <div onClick={() => handleRegistration(course.title)} className='btn btn-primary'>
-                        Apply Now
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-                  </div>
-                  {visibleCourses < courses.length && (
-          <div className="row">
-            <div className="col-12 d-flex justify-content-center">
-              <button className="btn btn-primary" onClick={handleLoadMore}>Load More</button>
+      {courses.slice(0, visibleCourses).map((course) => (
+        <div key={course._id} className="accordion" id={course._id}>
+          <div className="accordion-item" style={{marginBottom: '20px'}}>
+            <h2 className="accordion-header">
+              <button
+                className="accordion-button"
+                type="button"
+                onClick={() => handleAccordionToggle(course._id)}
+                aria-expanded={openAccordionId === course._id}
+                aria-controls={`collapse-${course._id}`}
+                style={{padding: '10x'}}
+              >
+                <p style={{width: '100px', margin: 0}}>{course.title}</p>
+              <button type="button" className="btn btn-sm btn-dark" onClick={() => handleRegistration(course.title)} style={{fontSize: '14px', padding: '0 20px'}}>
+                Apply Now
+              </button>
+              </button>
+            </h2>
+            <div
+              id={`collapse-${course._id}`}
+              className={`accordion-collapse collapse ${openAccordionId === course._id ? 'show' : ''}`}
+              aria-labelledby={`heading-${course._id}`}
+              data-bs-parent={`#${course._id}`}
+            >
+              <div className="accordion-body" dangerouslySetInnerHTML={{ __html: course.description }} />
             </div>
           </div>
-        )}
-
+        </div>
+      ))}
+    </div>
+                  {visibleCourses < courses.length && (
+                    <div className="row">
+                      <div className="col-12 d-flex justify-content-center">
+                        <button className="btn btn-primary" onClick={handleLoadMore}>Load More</button>
+                      </div>
+                    </div>
+                  )}
                   {/* <div className="course-card">
                     <h6 className="cou-title">
                       <Link className="collapsed" data-bs-toggle="collapse" to="#collapseOne" aria-expanded={open} onClick={()=> setOpen(!open)} aria-controls="example-collapse-text">
@@ -598,6 +592,22 @@ const DetailsContent = ({ content }) => {
               </div> */}
               {/* /Instructor */}
               {/* Reviews */}
+
+              <div className="card overview-sec">
+                <div className="card-body">
+                  <h5 className="subs-title">Videos Available</h5>
+                </div>
+              </div>
+
+              <div className="card overview-sec">
+                <div className="card-body">
+                  <h5 className="subs-title">Videos Available</h5>
+                  <div className="embed-responsive embed-responsive-16by9">
+                    <iframe className="embed-responsive-item" src={data.virtualTourLink} allowfullscreen></iframe>
+                  </div>
+                </div>
+              </div>
+
               <div className="card review-sec">
                 <div className="card-body">
                   <h5 className="subs-title">Reviews</h5>
