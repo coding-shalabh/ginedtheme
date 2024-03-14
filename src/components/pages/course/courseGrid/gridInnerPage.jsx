@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { Link, useNavigate } from "react-router-dom";
-import { Course10, Icon1 } from "../../../imagepath";
+import {  Icon1 } from "../../../imagepath";
+// import {default as collegeImage} from '../../../../assets/img/bg/college-image.jpg'
 
 
 const rating = [
@@ -57,7 +58,7 @@ const rating = [
 ];
 
 
-const location = "Bengaluru, India"
+
 
 const GridInnerPage = ({ collegeData }) => {
 
@@ -87,7 +88,6 @@ const GridInnerPage = ({ collegeData }) => {
             const roundedAverageRating = Math.round(averageRating); // Round to nearest whole number for filled stars
             const unfilledStars = 5 - roundedAverageRating; // Calculate the number of unfilled stars
 
-
             return (
               <>
 
@@ -96,11 +96,11 @@ const GridInnerPage = ({ collegeData }) => {
                     <div className="product">
                       <div className="product-img">
                       <div onClick={()=> handleNavigate(item)}>
-                          <img
+                          {/* <img
                             className="img-fluid"
                             alt=""
-                            src={Course10}
-                          />
+                            src={collegeImage}
+                          /> */}
                         </div>
                         {/* <div className="price">
                           <h3>
@@ -111,24 +111,24 @@ const GridInnerPage = ({ collegeData }) => {
                       </div>
                       <div className="product-content">
                         <div className="course-group d-flex">
-                          {/* <div className="course-group-img d-flex">
-                            <Link to="/instructor-profile">
+                          <div className="course-group-img d-flex">
+                            <div onClick={()=> handleNavigate(item)}>
                               <img
-                                src={User1}
+                                src={item.image}
                                 alt=""
                                 className="img-fluid"
                               />
-                            </Link>
-                            <div className="course-name">
-                              <h4>
-                                <Link to="/instructor-profile">Rolands R</Link>
-                              </h4>
-                              <p>Instructor</p>
                             </div>
-                          </div> */}
+                            <div className="course-name">
+                              {/* <h4>
+                                <Link to="/instructor-profile">{item.name}</Link>
+                              </h4> */}
+                              {/* <p>Instructor</p> */}
+                            </div>
+                          </div>
                           <div className="course-share d-flex align-items-center justify-content-center">
                             <Link to="#">
-                              <i className="fa-regular fa-heart" />
+                              {/* <i className="fa-regular fa-heart" /> */}
                             </Link>
                           </div>
                         </div>
@@ -144,7 +144,7 @@ const GridInnerPage = ({ collegeData }) => {
                         <div className="course-info d-flex align-items-center">
                           <div className="rating-img d-flex align-items-center">
                             <img src={Icon1} alt="" />
-                            <p>{location}</p>
+                            <p>{`${(item.courses).length}+ Courses`}</p>
                           </div>
                           {/* <div className="course-view d-flex align-items-center">
                             <img src={Icon2} alt="" />
@@ -169,7 +169,7 @@ const GridInnerPage = ({ collegeData }) => {
                           </span>
                         </div>
                         <div className="all-btn all-category d-flex align-items-center">
-                        <div onClick={()=> handleNavigate(item)} className='btn btn-primary'>
+                        <div onClick={()=> handleNavigate(item)} className='btn btn-primary' style={{padding: '5px', fontSize: '14px'}}>
                             Apply Now
                           </div>
                         </div>

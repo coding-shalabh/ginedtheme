@@ -2,9 +2,21 @@
 import React, { useEffect } from "react";
 import PropTypes from 'prop-types';
 import { useState } from "react";
-import { Chapter, Chart, Cloud, Import, Key, Mobile, Play, Teacher, Timer2, User1, Users, Video, Video2 } from "../../../imagepath";
+import { Chapter, Chart, Cloud, Import, Key, Mobile, Play, Teacher, Timer2, User1, Users, Video2 } from "../../../imagepath";
 import { Link } from 'react-router-dom';
 import FeatherIcon from "feather-icons-react";
+import YouTube from 'react-youtube';
+
+const opts = {
+  // width: '400px',
+  playerVars: {
+    autoplay: 0,
+    controls: 0, // Set to 0 to hide player controls
+    modestbranding: 1, // Set to 1 to remove YouTube logo
+    rel: 0, // Set to 0 to not show related videos at the end
+    showinfo: 0, // Set to 0 to hide video title and uploader information
+  },
+};
 
 
 const DetailsContent = ({ content }) => {
@@ -593,17 +605,17 @@ const DetailsContent = ({ content }) => {
               {/* /Instructor */}
               {/* Reviews */}
 
-              <div className="card overview-sec">
+              {/* <div className="card overview-sec">
                 <div className="card-body">
                   <h5 className="subs-title">Videos Available</h5>
                 </div>
-              </div>
+              </div> */}
 
               <div className="card overview-sec">
                 <div className="card-body">
-                  <h5 className="subs-title">Videos Available</h5>
+                  <h5 className="subs-title">Others Videos</h5>
                   <div className="embed-responsive embed-responsive-16by9">
-                    <iframe className="embed-responsive-item" src={data.virtualTourLink} allowfullscreen></iframe>
+                    <YouTube className="embed-responsive-item" opts={opts} videoId={'93RpiQ2I2uw'}/>
                   </div>
                 </div>
               </div>
@@ -711,23 +723,14 @@ const DetailsContent = ({ content }) => {
                 <div className="video-sec vid-bg">
                   <div className="card">
                     <div className="card-body">
-                      <Link
-                        to="https://www.youtube.com/embed/1trvO6dqQUI"
-                        className="video-thumbnail"
-                        data-fancybox=""
-                      >
-                        <div className="play-icon">
-                          <i className="fa-solid fa-play" />
-                        </div>
-                        <img className="" src={Video} alt="" />
-                      </Link>
+                    <YouTube className="embed-responsive-item" opts={opts} videoId={'93RpiQ2I2uw'}/>
                       <div className="video-details">
-                        <div className="course-fee">
+                        {/* <div className="course-fee">
                           <h2>FREE</h2>
                           <p>
                             <span>$99.00</span> 50% off
                           </p>
-                        </div>
+                        </div> */}
                         <div className="row gx-2">
                           <div className="col-md-6 addHeart">
                             <Link
@@ -766,7 +769,7 @@ const DetailsContent = ({ content }) => {
                 <div className="card include-sec">
                   <div className="card-body">
                     <div className="cat-title">
-                      <h4>Includes</h4>
+                      <h4>Key Points</h4>
                     </div>
                     <ul>
                       <li>

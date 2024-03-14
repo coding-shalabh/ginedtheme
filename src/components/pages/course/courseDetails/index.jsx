@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import CourseHeader from "../header";
-import InnerBanner from "../../../../assets/img/inner-banner.jpg";
+// import InnerBanner from "../../../../assets/img/inner-banner.jpg";
 import DetailsContent from "./detailsContent";
 import { Icon1, People } from "../../../imagepath";
 import Footer from "../../../footer";
 import { Link, useLocation } from "react-router-dom";
+import {default as collegeImage} from '../../../../assets/img/bg/college-image.jpg'
 
 const CourseDetails = () => {
 
@@ -82,7 +83,7 @@ const CourseDetails = () => {
 
         <div
           className="inner-banner"
-          style={{ backgroundImage: "url(" + InnerBanner + ")" }}
+          style={{ backgroundImage: "url(" + collegeImage + ")", backgroundPosition: 'center', padding: '65px 0' }}
         >
           <div className="container">
             <div className="row">

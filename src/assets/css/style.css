@@ -26385,3 +26385,9 @@ svg.feather.feather-log-out.me-1 {
     background-color: #FF875A !important;
     border: 1px solid #FF875A !important;
 } */
+
+
+.embed-responsive-item iframe {
+    border-radius: 10px;
+    box-shadow: 0px 0px 20px 20px #00000010;
+}
