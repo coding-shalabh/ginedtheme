@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import PropTypes from 'prop-types';
 import { useState } from "react";
 import { Chapter, Chart, Import, Timer2, User1, Users, Video2 } from "../../../imagepath";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import FeatherIcon from "feather-icons-react";
 
 const DetailsContent = ({ content }) => {
@@ -19,6 +19,8 @@ const DetailsContent = ({ content }) => {
   const [openAccordionId, setOpenAccordionId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredCourses, setFilteredCourses] = useState(content.courses)
+  const navigate = useNavigate();
+
 
   const handleAccordionToggle = (accordionId) => {
     setOpenAccordionId((prevId) => (prevId === accordionId ? null : accordionId));
@@ -36,10 +38,18 @@ const DetailsContent = ({ content }) => {
   }, [content]);
 
   useEffect(() => {
+
+
+    //Change Path Name
+    const lowercasePathname = location.pathname.toLowerCase();
+    if (location.pathname !== lowercasePathname) {
+      // Update pathname to lowercase
+      navigate(lowercasePathname);
+    }
+
     // Fetch the array of course references
     const fetchCourses = async () => {
       try {
-
         // Iterate through each reference and fetch course details
         console.log(data.courses);
         const courseDetailsPromises = data.courses.map(async (courseReference) => {
@@ -61,6 +71,8 @@ const DetailsContent = ({ content }) => {
     };
 
     fetchCourses();
+
+
   }, []);
 
 
