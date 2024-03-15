@@ -26391,3 +26391,7 @@ svg.feather.feather-log-out.me-1 {
     border-radius: 10px;
     box-shadow: 0px 0px 20px 20px #00000010;
 }
+
+.accordion-button:not(.collapsed)::after {
+    display: none
+}

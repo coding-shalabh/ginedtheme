@@ -24,24 +24,48 @@ const AddCollege = () => {
   });
 
   const [courses, setCourses] = useState([]);
-  const [categories, setCategories] = useState([]);
+  // const [categories, setCategories] = useState([]);
   const [showCourseDropdown, setShowCourseDropdown] = useState(false);
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [searchCourseKeyword, setSearchCourseKeyword] = useState('');
+  const [categories, setCategories] = useState([]);
+  // const categories = []; // Assuming you have an array of categories
+
+  const filteredCategories = categories.filter(category => category.title.toLowerCase().includes(searchKeyword.toLowerCase()));
+
+  // useEffect(() => {
+  //   const fetchCoursesAndCategories = async () => {
+  //     try {
+  //       const coursesResponse = await axios.get("https://api.gined.in/api/courses");
+  //       setCourses(coursesResponse.data);
+  //       const categoriesResponse = await axios.get("https://api.gined.in/api/categories");
+  //       setCategories(categoriesResponse.data);
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   };
+
+  //   fetchCoursesAndCategories();
+  // }, []);
 
 
   useEffect(() => {
-    const fetchCoursesAndCategories = async () => {
+    const fetchData = async () => {
       try {
-        const coursesResponse = await axios.get("https://api.gined.in/api/courses");
+        // setLoading(true); // Set loading state to true
+        const [coursesResponse, categoriesResponse] = await Promise.all([
+          axios.get("https://api.gined.in/api/courses"),
+          axios.get("https://api.gined.in/api/categories")
+        ]);
         setCourses(coursesResponse.data);
-        const categoriesResponse = await axios.get("https://api.gined.in/api/categories");
         setCategories(categoriesResponse.data);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.log(error); // Set error state if any error occurs
       }
     };
 
-    fetchCoursesAndCategories();
+    fetchData();
   }, []);
 
   // const handleInputChange = (e) => {
@@ -105,14 +129,24 @@ const AddCollege = () => {
 
 
   // Function to toggle category selection
+  // const handleSelectCategory = (categoryId) => {
+  //   // Handling category selection
+  //   const isCategorySelected = formData.categories.includes(categoryId);
+  //   const updatedCategories = isCategorySelected
+  //     ? formData.categories.filter(id => id !== categoryId)
+  //     : [...formData.categories, categoryId];
+  //   setFormData({ ...formData, categories: updatedCategories });
+  // };
+
   const handleSelectCategory = (categoryId) => {
     // Handling category selection
     const isCategorySelected = formData.categories.includes(categoryId);
     const updatedCategories = isCategorySelected
       ? formData.categories.filter(id => id !== categoryId)
       : [...formData.categories, categoryId];
-    setFormData({ ...formData, categories: updatedCategories });
+    setFormData(prevFormData => ({ ...prevFormData, categories: updatedCategories }));
   };
+
 
 
   const handleImageChange = (e) => {
@@ -236,40 +270,77 @@ const AddCollege = () => {
             ))}
 
             <div className="form-group">
-        <button className="btn btn-secondary dropdown-toggle w-100" type="button" onClick={() => setShowCourseDropdown(!showCourseDropdown)}>
-          Select Courses
-        </button>
-        {showCourseDropdown && (
-          <div className="dropdown-menu show w-100">
-            {courses.map((course) => (
-              <a key={course._id} className="dropdown-item" href="#" onClick={(e) => {
-                e.preventDefault();
-                handleSelectCourse(course._id);
-              }}>
-                <input type="checkbox" checked={formData.courses.includes(course._id)} readOnly /> {course.title}
-              </a>
-            ))}
-          </div>
-        )}
-      </div>
-      {/* Dropdown for categories */}
-      <div className="form-group">
-        <button className="btn btn-secondary dropdown-toggle w-100" type="button" onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}>
-          Select Categories
-        </button>
-        {showCategoryDropdown && (
-          <div className="dropdown-menu show w-100">
-            {categories.map((category) => (
-              <a key={category._id} className="dropdown-item" href="#" onClick={(e) => {
-                e.preventDefault();
-                handleSelectCategory(category._id);
-              }}>
-                <input type="checkbox" checked={formData.categories.includes(category._id)} readOnly /> {category.title}
-              </a>
-            ))}
-          </div>
-        )}
-      </div>
+              <div className="dropdown">
+                <input
+                  type="text"
+                  className="form-control dropdown-toggle"
+                  placeholder="Search Courses"
+                  onClick={() => setShowCourseDropdown(true)}
+                  onChange={(e) => setSearchCourseKeyword(e.target.value)}
+                />
+                {showCourseDropdown && (
+                  <div className="dropdown-menu show w-100">
+                    {courses
+                      .filter((course) => course.title.toLowerCase().includes(searchCourseKeyword.toLowerCase()))
+                      .map((course) => (
+                        <a
+                          key={course._id}
+                          className="dropdown-item"
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleSelectCourse(course._id);
+                          }}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={formData.courses.includes(course._id)}
+                            readOnly
+                          />{' '}
+                          {course.title}
+                        </a>
+                      ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+
+            {/* Dropdown for categories */}
+            <div className="form-group">
+              <div className="dropdown">
+                <input
+                  type="text"
+                  className="form-control dropdown-toggle"
+                  placeholder="Search Categories"
+                  onClick={() => setShowCategoryDropdown(true)}
+                  onChange={(e) => setSearchKeyword(e.target.value)}
+                />
+
+                {showCategoryDropdown && (
+                  <div className="dropdown-menu show w-100" style={{ display: 'block' }}>
+                    {filteredCategories.map((category) => (
+                      <a
+                        key={category._id}
+                        className="dropdown-item"
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleSelectCategory(category._id);
+                        }}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={formData.categories.includes(category._id)}
+                          readOnly
+                        />{' '}
+                        {category.title}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
             <div className="form-group">
               <label>Upload College Image</label>
               <input required type="file" className="form-control" onChange={handleImageChange} />

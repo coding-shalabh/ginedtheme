@@ -2,22 +2,9 @@
 import React, { useEffect } from "react";
 import PropTypes from 'prop-types';
 import { useState } from "react";
-import { Chapter, Chart, Cloud, Import, Key, Mobile, Play, Teacher, Timer2, User1, Users, Video2 } from "../../../imagepath";
+import { Chapter, Chart, Import, Timer2, User1, Users, Video2 } from "../../../imagepath";
 import { Link } from 'react-router-dom';
 import FeatherIcon from "feather-icons-react";
-import YouTube from 'react-youtube';
-
-const opts = {
-  // width: '400px',
-  playerVars: {
-    autoplay: 0,
-    controls: 0, // Set to 0 to hide player controls
-    modestbranding: 1, // Set to 1 to remove YouTube logo
-    rel: 0, // Set to 0 to not show related videos at the end
-    showinfo: 0, // Set to 0 to hide video title and uploader information
-  },
-};
-
 
 const DetailsContent = ({ content }) => {
 
@@ -28,8 +15,10 @@ const DetailsContent = ({ content }) => {
   // const [open4] = useState(false);
   const [data, setData] = useState(content);
   const [visibleCourses, setVisibleCourses] = useState(3); // Number of courses initially visible
-  const [courses, setCourses] = useState(content.courses); // Assuming content.courses contains the list of courses
+  const [courseList, setCourseList] = useState([]); // Assuming content.courses contains the list of courses
   const [openAccordionId, setOpenAccordionId] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredCourses, setFilteredCourses] = useState(content.courses)
 
   const handleAccordionToggle = (accordionId) => {
     setOpenAccordionId((prevId) => (prevId === accordionId ? null : accordionId));
@@ -64,7 +53,8 @@ const DetailsContent = ({ content }) => {
 
         // Set the state with the fetched course details
         console.log(courseDetails);
-        setCourses(courseDetails);
+        setCourseList(courseDetails);
+        setFilteredCourses(courseDetails);
       } catch (error) {
         console.error('Error fetching courses:', error);
       }
@@ -89,6 +79,37 @@ const DetailsContent = ({ content }) => {
   //     return description;
   //   }
   // };
+
+
+  const handleSearchChange = (e) => {
+    const query = e.target.value.toLowerCase();
+    setSearchQuery(query);
+
+    if (query === '') {
+      // If the search query is empty, reset the filtered courses to show all data
+      setFilteredCourses(content.courses);
+    }
+  };
+
+  useEffect(() => {
+    if (searchQuery) {
+
+      const removeNonAlphanumeric = (str) => {
+        return str.replace(/[^a-zA-Z0-9 ]/g, '');
+      };
+
+      const list = filteredCourses.filter(course =>
+        removeNonAlphanumeric(course.title).toLowerCase().includes(removeNonAlphanumeric(searchQuery).toLowerCase())
+      );
+
+      // Helper function to remove non-alphanumeric characters
+
+      setFilteredCourses(list);
+    } else {
+      // If the search query is empty, reset the filtered courses to show all data
+      setFilteredCourses(courseList);
+    }
+  }, [searchQuery]);
 
 
   return (
@@ -166,37 +187,53 @@ const DetailsContent = ({ content }) => {
 
                   {/* {List of all the courses card} */}
                   <div className="row">
-      {courses.slice(0, visibleCourses).map((course) => (
-        <div key={course._id} className="accordion" id={course._id}>
-          <div className="accordion-item" style={{marginBottom: '20px'}}>
-            <h2 className="accordion-header">
-              <button
-                className="accordion-button"
-                type="button"
-                onClick={() => handleAccordionToggle(course._id)}
-                aria-expanded={openAccordionId === course._id}
-                aria-controls={`collapse-${course._id}`}
-                style={{padding: '10x'}}
-              >
-                <p style={{width: '100px', margin: 0}}>{course.title}</p>
-              <button type="button" className="btn btn-sm btn-dark" onClick={() => handleRegistration(course.title)} style={{fontSize: '14px', padding: '0 20px'}}>
-                Apply Now
-              </button>
-              </button>
-            </h2>
-            <div
-              id={`collapse-${course._id}`}
-              className={`accordion-collapse collapse ${openAccordionId === course._id ? 'show' : ''}`}
-              aria-labelledby={`heading-${course._id}`}
-              data-bs-parent={`#${course._id}`}
-            >
-              <div className="accordion-body" dangerouslySetInnerHTML={{ __html: course.description }} />
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-                  {visibleCourses < courses.length && (
+                    <input
+                      type="text"
+                      className="form-control mb-3"
+                      placeholder="Search for courses..."
+                      value={searchQuery}
+                      onChange={handleSearchChange}
+                    />
+                    {filteredCourses.slice(0, visibleCourses).map((course) => (
+                      <div key={course._id} className="accordion" id={course._id}>
+
+                        <div className="accordion-item" style={{ marginBottom: '20px' }}>
+                          <h2 className="accordion-header">
+                            <button
+                              className="accordion-button"
+                              type="button"
+                              onClick={() => handleAccordionToggle(course._id)}
+                              aria-expanded={openAccordionId === course._id}
+                              aria-controls={`collapse-${course._id}`}
+                              style={{ padding: '10x' }}
+                            >
+                              <div className="d-flex justify-content-between w-100" >
+                                <p style={{ width: '100%', margin: 0 }}>{course.title}</p>
+                                <button
+                                  type="button"
+                                  className="btn btn-sm btn-dark"
+                                  onClick={() => handleRegistration(course.title)}
+                                  style={{ fontSize: '14px', padding: '0 20px', width: '150px' }}
+                                >
+                                  Apply Now
+                                </button>
+                              </div>
+
+                            </button>
+                          </h2>
+                          <div
+                            id={`collapse-${course._id}`}
+                            className={`accordion-collapse collapse ${openAccordionId === course._id ? 'show' : ''}`}
+                            aria-labelledby={`heading-${course._id}`}
+                            data-bs-parent={`#${course._id}`}
+                          >
+                            <div className="accordion-body" dangerouslySetInnerHTML={{ __html: course.description }} />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  {visibleCourses < filteredCourses.length && (
                     <div className="row">
                       <div className="col-12 d-flex justify-content-center">
                         <button className="btn btn-primary" onClick={handleLoadMore}>Load More</button>
@@ -613,9 +650,16 @@ const DetailsContent = ({ content }) => {
 
               <div className="card overview-sec">
                 <div className="card-body">
-                  <h5 className="subs-title">Others Videos</h5>
+                  <h5 className="subs-title">Virtual Tour</h5>
                   <div className="embed-responsive embed-responsive-16by9">
-                    <YouTube className="embed-responsive-item" opts={opts} videoId={'93RpiQ2I2uw'}/>
+                    <iframe
+                      title="Video Tour"
+                      width="100%"
+                      height="300"
+                      src={data.virtualTourLink}
+                      allowfullscreen
+                      style={{ borderRadius: '10px' }}
+                    ></iframe>
                   </div>
                 </div>
               </div>
@@ -668,7 +712,7 @@ const DetailsContent = ({ content }) => {
               </div>
               {/* /Reviews */}
               {/* Comment */}
-              <div className="card comment-sec">
+              {/* <div className="card comment-sec">
                 <div className="card-body">
                   <h5 className="subs-title">Post A comment</h5>
                   <form action='#'>
@@ -714,7 +758,7 @@ const DetailsContent = ({ content }) => {
                     </div>
                   </form>
                 </div>
-              </div>
+              </div> */}
               {/* /Comment */}
             </div>
             <div className="col-lg-4">
@@ -723,7 +767,14 @@ const DetailsContent = ({ content }) => {
                 <div className="video-sec vid-bg">
                   <div className="card">
                     <div className="card-body">
-                    <YouTube className="embed-responsive-item" opts={opts} videoId={'93RpiQ2I2uw'}/>
+                      <iframe
+                        title="Video Tour"
+                        width="100%"
+                        height="250"
+                        src={data.virtualTourLink}
+                        allowfullscreen
+                        style={{ borderRadius: '10px' }}
+                      ></iframe>
                       <div className="video-details">
                         {/* <div className="course-fee">
                           <h2>FREE</h2>
@@ -769,57 +820,21 @@ const DetailsContent = ({ content }) => {
                 <div className="card include-sec">
                   <div className="card-body">
                     <div className="cat-title">
-                      <h4>Key Points</h4>
+                      <h4>Top Placement Companines</h4>
                     </div>
                     <ul>
-                      <li>
-                        <img
-                          src={Import}
-                          className="me-2"
-                          alt=""
-                        />{" "}
-                        11 hours on-demand video
-                      </li>
-                      <li>
-                        <img
-                          src={Play}
-                          className="me-2"
-                          alt=""
-                        />{" "}
-                        69 downloadable resources
-                      </li>
-                      <li>
-                        <img
-                          src={Key}
-                          className="me-2"
-                          alt=""
-                        />{" "}
-                        Full lifetime access
-                      </li>
-                      <li>
-                        <img
-                          src={Mobile}
-                          className="me-2"
-                          alt=""
-                        />{" "}
-                        Access on mobile and TV
-                      </li>
-                      <li>
-                        <img
-                          src={Cloud}
-                          className="me-2"
-                          alt=""
-                        />{" "}
-                        Assignments
-                      </li>
-                      <li>
-                        <img
-                          src={Teacher}
-                          className="me-2"
-                          alt=""
-                        />{" "}
-                        Certificate of Completion
-                      </li>
+
+                      {((data.placements.companies).split(',')).map((company, index) => {
+                        if (index < 9){
+                          return (
+                            <li key={index}>
+                              <img src={Import} className="me-2" alt="" /> {company}
+                            </li>
+                          )
+                        }
+                      }
+
+                      )}
                     </ul>
                   </div>
                 </div>
@@ -828,7 +843,7 @@ const DetailsContent = ({ content }) => {
                 <div className="card feature-sec">
                   <div className="card-body">
                     <div className="cat-title">
-                      <h4>Includes</h4>
+                      <h4>Key Point</h4>
                     </div>
                     <ul>
                       <li>
@@ -837,7 +852,7 @@ const DetailsContent = ({ content }) => {
                           className="me-2"
                           alt=""
                         />{" "}
-                        Enrolled: <span>32 students</span>
+                        Students: <span>1000+ students</span>
                       </li>
                       <li>
                         <img
@@ -845,7 +860,7 @@ const DetailsContent = ({ content }) => {
                           className="me-2"
                           alt=""
                         />{" "}
-                        Duration: <span>20 hours</span>
+                        Highest Package: <span>{data.placements.highestPackage}</span>
                       </li>
                       <li>
                         <img
@@ -853,7 +868,7 @@ const DetailsContent = ({ content }) => {
                           className="me-2"
                           alt=""
                         />{" "}
-                        Chapters: <span>15</span>
+                        Average Package: <span>{data.placements.averagePackage}</span>
                       </li>
                       <li>
                         <img
@@ -861,7 +876,7 @@ const DetailsContent = ({ content }) => {
                           className="me-2"
                           alt=""
                         />{" "}
-                        Video:<span> 12 hours</span>
+                        Percentage Placed: <span>{data.placements.percentagePlaced}%</span>
                       </li>
                       <li>
                         <img
@@ -869,7 +884,7 @@ const DetailsContent = ({ content }) => {
                           className="me-2"
                           alt=""
                         />{" "}
-                        Level: <span>Beginner</span>
+                        Review Level: <span>{data.reviews}+ rating</span>
                       </li>
                     </ul>
                   </div>

@@ -5,54 +5,55 @@ import DetailsContent from "./detailsContent";
 import { Icon1, People } from "../../../imagepath";
 import Footer from "../../../footer";
 import { Link, useLocation } from "react-router-dom";
-import {default as collegeImage} from '../../../../assets/img/bg/college-image.jpg'
+import { default as collegeImage } from '../../../../assets/img/bg/college-image.jpg'
 
 const CourseDetails = () => {
 
   // const [fetchData, setFetchData] = useState([]);
   const [collegeData, setCollegeData] = useState('');
   const location = useLocation();
-  const {item} = location.state;
-  
-  useEffect(() => {
-    const setUriEndpoint =
-        location.pathname.split("/")[0] === "colleges" ? "colleges" : "courses";
-    const collegeName = decodeURIComponent(location.pathname.split("/")[1]);
-      console.log("Woring");
-    const getData = async () => {
-        try {
-          console.log("sdsdsd");
-            // Fetch data for the college from the database
-            const res = await fetch(`https://api.gined.in/api/${setUriEndpoint}/${collegeName}`);
-            if (res.ok) {
-                const data = await res.json();
-                setCollegeData(data);
-                // Display the college details using the fetched data
-                console.log("College details:", data);
-            } else {
-                // Handle the case where the college is not found
-                console.error("College not found");
-            }
-        } catch (error) {
-            // Handle any network or server errors
-            console.error("Error fetching college data:", error);
-        }
+  const { item } = location.state ?? {};
 
-    };
-    if(item){
-      setCollegeData(item);
-      console.log(item);
-    }else {
-      getData();
+
+  const getData = async () => {
+
+    const setUriEndpoint = location.pathname.split("/")[1] === "colleges" ? "colleges" : "courses";
+    const collegeName = decodeURIComponent(location.pathname.split("/")[2]);
+    try {
+      console.log(`https://api.gined.in/api/${setUriEndpoint}/${collegeName}`);
+      // Fetch data for the college from the database
+      const res = await fetch(`https://api.gined.in/api/${setUriEndpoint}/${collegeName}`);
+      
+      if (res.ok) {
+        const data = await res.json();
+        setCollegeData(data);
+        // Display the college details using the fetched data
+        console.log("College details:", data);
+      } else {
+        // Handle the case where the college is not found
+        console.error("College not found");
+      }
+    } catch (error) {
+      // Handle any network or server errors
+      console.error("Error fetching college data:", error);
     }
-    
 
-}, []);
+  };
+  useEffect(() => {
+    if (!item) {
+      // If item is not available in location.state, fetch data based on URL
+      getData();
+    } else {
+      console.log("Here.-------")
+      // If item is available, set the college data
+      setCollegeData(item);
+    }
+  }, [item]); 
 
   return (
     <>
       <div className="main-wrapper">
-        <CourseHeader activeMenu={"CourseDetails"}/>
+        <CourseHeader activeMenu={"CourseDetails"} />
 
         <div className="breadcrumb-bar">
           <div className="container">
@@ -140,11 +141,11 @@ const CourseDetails = () => {
           </div>
         </div>
         {
-          collegeData !== '' ? 
-        <DetailsContent content={collegeData}/> : <></>
+          collegeData !== '' ?
+            <DetailsContent content={collegeData} /> : <></>
         }
 
-        <Footer/>
+        <Footer />
 
       </div>
     </>

@@ -75,7 +75,7 @@ const GridInnerPage = ({ collegeData }) => {
   }
 
   const handleNavigate = (item)=> {
-    navigate(`/colleges/${item.name.replace(/ /g, '-')}`, {state: {item}})
+    navigate(`/colleges/${item.name.replace(/[^a-zA-Z ]/g, "").toLowerCase().replace(/ /g, "-")}`, {state: {item}})
   }
 
   return (
