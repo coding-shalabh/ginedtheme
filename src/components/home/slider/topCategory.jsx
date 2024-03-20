@@ -1,30 +1,24 @@
-import {
-  CategoryIcon,
-  CategoryIcon1,
-  CategoryIcon2,
-  CategoryIcon3,
-  CategoryIcon4,
-  CategoryIcon5,
-} from "../../imagepath";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import OwlCarousel from "react-owl-carousel";
 import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
 import { Link } from "react-router-dom";
+import axios from "axios"; // Assuming you are using axios for API requests
 
 const TopCategory = () => {
+  // State for categories
+  const [categories, setCategories] = useState([]);
+
+  // Carousel settings
   var settings = {
-    //autoWidth: true,
     items: 2,
     margin: 25,
-    gap: 10,
     dots: true,
     nav: true,
     navText: [
       '<i className="fas fa-arrow-left"></i>',
       '<i className="fas fa-arrow-right"></i>',
     ],
-
     loop: true,
     responsiveClass: true,
     responsive: {
@@ -43,6 +37,23 @@ const TopCategory = () => {
     },
   };
 
+  // Fetch categories with college count from the API
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+
+        // Update the URL to the new endpoint that includes college counts
+        const response = await axios.get('https://api.gined.in/api/categories/');
+        setCategories(response.data);
+        console.log(response);
+      } catch (error) {
+        console.error("Failed to fetch categories with college counts", error);
+      }
+    };
+
+    fetchCategories();
+  }, []); // Empty dependency array means this effect runs once on mount
+
   return (
     <section className="section how-it-works">
       <div className="container">
@@ -59,9 +70,7 @@ const TopCategory = () => {
         </div>
         <div className="section-text aos" data-aos="fade-up">
           <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eget aenean
-            accumsan bibendum gravida maecenas augue elementum et neque.
-            Suspendisse imperdiet.
+            Explore Top Categories, your guide to premier educational institutions for unparalleled academic excellence and opportunities.
           </p>
         </div>
         <OwlCarousel
@@ -72,204 +81,19 @@ const TopCategory = () => {
           margin={10}
           nav
         >
-          <div className="feature-box text-center ">
-            <div className="feature-bg">
-              <div className="feature-header">
-                <div className="feature-icon">
-                  <img src={CategoryIcon} alt="" />
-                </div>
-                <div className="feature-cont">
-                  <div className="feature-text">Angular Development</div>
-                </div>
-              </div>
-              <p>40 Instructors</p>
-            </div>
-          </div>
-          <div className="feature-box text-center ">
-            <div className="feature-bg">
-              <div className="feature-header">
-                <div className="feature-icon">
-                  <img src={CategoryIcon1} alt="" />
-                </div>
-                <div className="feature-cont">
-                  <div className="feature-text">Docker Development</div>
-                </div>
-              </div>
-              <p>45 Instructors</p>
-            </div>
-          </div>
-          <div className="feature-box text-center ">
-            <div className="feature-bg">
-              <div className="feature-header">
-                <div className="feature-icon">
-                  <img src={CategoryIcon2} alt="" />
-                </div>
-                <div className="feature-cont">
-                  <div className="feature-text">Node JS Frontend</div>
-                </div>
-              </div>
-              <p>40 Instructors</p>
-            </div>
-          </div>
-          <div className="feature-box text-center ">
-            <div className="feature-bg">
-              <div className="feature-header">
-                <div className="feature-icon">
-                  <img src={CategoryIcon3} alt="" />
-                </div>
-                <div className="feature-cont">
-                  <div className="feature-text">Swift Development</div>
-                </div>
-              </div>
-              <p>23 Instructors</p>
-            </div>
-          </div>
-          <div className="feature-box text-center ">
-            <div className="feature-bg">
-              <div className="feature-header">
-                <div className="feature-icon">
-                  <img src={CategoryIcon4} alt="" />
-                </div>
-                <div className="feature-cont">
-                  <div className="feature-text">Python Development</div>
-                </div>
-              </div>
-              <p>30 Instructors</p>
-            </div>
-          </div>
-          <div className="feature-box text-center ">
-            <div className="feature-bg">
-              <div className="feature-header">
-                <div className="feature-icon">
-                  <img src={CategoryIcon5} alt="" />
-                </div>
-                <div className="feature-cont">
-                  <div className="feature-text">
-                    React
-                    <br /> Native
+          {categories.map((category) => (
+            <div key={category.id} className="feature-box text-center">
+              <div className="feature-bg">
+                <div className="feature-header">
+                  <div className="feature-cont">
+                    <div className="feature-text">{category.title}</div>
                   </div>
                 </div>
+                {/* Update to show the college count */}
+                <p>{category.collegesCount}10+ Colleges</p>
               </div>
-              <p>80 Instructors</p>
             </div>
-          </div>
-          <div className="feature-box text-center ">
-            <div className="feature-bg">
-              <div className="feature-header">
-                <div className="feature-icon">
-                  <img src={CategoryIcon4} alt="" />
-                </div>
-                <div className="feature-cont">
-                  <div className="feature-text">Angular Development</div>
-                </div>
-              </div>
-              <p>40 Instructors</p>
-            </div>
-          </div>
-          <div className="feature-box text-center ">
-            <div className="feature-bg">
-              <div className="feature-header">
-                <div className="feature-icon">
-                  <img src={CategoryIcon1} alt="" />
-                </div>
-                <div className="feature-cont">
-                  <div className="feature-text">Docker Development</div>
-                </div>
-              </div>
-              <p>45 Instructors</p>
-            </div>
-          </div>
-          <div className="feature-box text-center ">
-            <div className="feature-bg">
-              <div className="feature-header">
-                <div className="feature-icon">
-                  <img src={CategoryIcon2} alt="" />
-                </div>
-                <div className="feature-cont">
-                  <div className="feature-text">Node JS Frontend</div>
-                </div>
-              </div>
-              <p>40 Instructors</p>
-            </div>
-          </div>
-          <div className="feature-box text-center ">
-            <div className="feature-bg">
-              <div className="feature-header">
-                <div className="feature-icon">
-                  <img src={CategoryIcon3} alt="" />
-                </div>
-                <div className="feature-cont">
-                  <div className="feature-text">Swift Development</div>
-                </div>
-              </div>
-              <p>23 Instructors</p>
-            </div>
-          </div>
-          <div className="feature-box text-center ">
-            <div className="feature-bg">
-              <div className="feature-header">
-                <div className="feature-icon">
-                  <img src={CategoryIcon4} alt="" />
-                </div>
-                <div className="feature-cont">
-                  <div className="feature-text">Python Development</div>
-                </div>
-              </div>
-              <p>30 Instructors</p>
-            </div>
-          </div>
-          <div className="feature-box text-center ">
-            <div className="feature-bg">
-              <div className="feature-header">
-                <div className="feature-icon">
-                  <img src={CategoryIcon1} alt="" />
-                </div>
-                <div className="feature-cont">
-                  <div className="feature-text">Docker Development</div>
-                </div>
-              </div>
-              <p>45 Instructors</p>
-            </div>
-          </div>
-          <div className="feature-box text-center ">
-            <div className="feature-bg">
-              <div className="feature-header">
-                <div className="feature-icon">
-                  <img src={CategoryIcon2} alt="" />
-                </div>
-                <div className="feature-cont">
-                  <div className="feature-text">Node JS Frontend</div>
-                </div>
-              </div>
-              <p>40 Instructors</p>
-            </div>
-          </div>
-          <div className="feature-box text-center ">
-            <div className="feature-bg">
-              <div className="feature-header">
-                <div className="feature-icon">
-                  <img src={CategoryIcon3} alt="" />
-                </div>
-                <div className="feature-cont">
-                  <div className="feature-text">Swift Development</div>
-                </div>
-              </div>
-              <p>23 Instructors</p>
-            </div>
-          </div>
-          <div className="feature-box text-center ">
-            <div className="feature-bg">
-              <div className="feature-header">
-                <div className="feature-icon">
-                  <img src={CategoryIcon4} alt="" />
-                </div>
-                <div className="feature-cont">
-                  <div className="feature-text">Python Development</div>
-                </div>
-              </div>
-              <p>30 Instructors</p>
-            </div>
-          </div>
+          ))}
         </OwlCarousel>
       </div>
     </section>

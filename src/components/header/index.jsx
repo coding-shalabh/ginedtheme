@@ -96,12 +96,13 @@ const Header = () => {
                 </span>
               </Link>
               <Link to="/" className="navbar-brand logo">
-                <img src={logo} className="img-fluid" alt="Logo" />
+                <img src={logo} className="img-fluid" alt="Logo"/>
               </Link>
             </div>
             <div className="main-menu-wrapper">
               <div className="menu-header">
                 <Link to="/" className="menu-logo">
+                
                   <img src={logo} className="img-fluid" alt="Logo" />
                 </Link>
                 <Link
