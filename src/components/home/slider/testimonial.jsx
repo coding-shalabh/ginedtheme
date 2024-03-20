@@ -9,7 +9,7 @@ import "slick-carousel/slick/slick-theme.css";
 
 const Testimonial = () => {
   return (
-    <section className="testimonial-four">
+    <section className="testimonial-four" style={{marginBottom: '275px'}}>
       <div className="review">
         <div className="container">
           <div className="testi-quotes">

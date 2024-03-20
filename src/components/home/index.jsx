@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import Header from "../main-header";
 import {
   bannerimg,
-  Become1,
-  Become2,
+  // Become1,
+  // Become2,
   CertificateIcon,
   // Course1,
   CourseIcon,
@@ -13,18 +13,18 @@ import {
   Icon03,
   Icon04,
   // Icon1,
-  Icon10,
-  Icon12,
-  Icon13,
-  Icon14,
-  Icon15,
-  Icon16,
-  Icon17,
-  Icon18,
+  // Icon10,
+  // Icon12,
+  // Icon13,
+  // Icon14,
+  // Icon15,
+  // Icon16,
+  // Icon17,
+  // Icon18,
   // Icon2,
-  Icon7,
-  Icon8,
-  Icon9,
+  // Icon7,
+  // Icon8,
+  // Icon9,
   Join,
   PencilIcon,
   Share,
@@ -35,9 +35,9 @@ import Loginbg from "../../assets/img/banner.png";
 import TrendingCourse from "./slider/trendingCourse";
 // import Companies from "./slider/companies";
 import BgBanner1 from "../../assets/img/bg-banner-01.png";
-import BgBanner2 from "../../assets/img/bg-banner-02.png";
-import UserLove from "../../assets/img/user-love.jpg";
-import Blog from "./slider/blog";
+// import BgBanner2 from "../../assets/img/bg-banner-02.png";
+import UserLove from "../../assets/img/testimonia-background.jpg";
+// import Blog from "./slider/blog";
 import Footer from "../footer";
 import Testimonial from "./slider/testimonial";
 import { Link } from "react-router-dom";
@@ -555,11 +555,11 @@ export const Home = () => {
                     </li>
                     <li>
                       <i className="fa-solid fa-circle-check" />
-                      Top rated Instructors
+                      Best Colleges
                     </li>
                   </ul>
                   <div className="all-btn all-category d-flex align-items-center">
-                    <Link to="/instructor-list" className="btn btn-primary">
+                    <Link to="/our-colleges" className="btn btn-primary">
                       Read More
                     </Link>
                   </div>
@@ -572,13 +572,13 @@ export const Home = () => {
 
         <section
           className="section user-love"
-          style={{ backgroundImage: "url(" + UserLove + ")" }}
+          style={{ backgroundImage: `url( + ${UserLove} + )`, filter: 'greyscale(1)',backgroundPostition: 'top' }}
         >
           <div className="container">
             <div className="section-header white-header aos" data-aos="fade-up">
-              <div className="section-sub-head feature-head text-center">
-                <span>Check out these real reviews</span>
-                <h2>Users-love-us Dont take it from us.</h2>
+              <div className="section-sub-head feature-head text-center" >
+                <span style={{color: '#000000'}} >Check out these real reviews</span>
+                <h2 style={{color: '#000000'}}>Users-love-us Dont take it from us.</h2>
               </div>
             </div>
           </div>
@@ -588,7 +588,7 @@ export const Home = () => {
         {/* Testimonial Carousel */}
 
         {/* Become a instructor */}
-        <section className="section become-instructors aos" data-aos="fade-up">
+        {/* <section className="section become-instructors aos" data-aos="fade-up">
           <div className="container">
             <div className="row">
               <div className="col-lg-6 col-md-6 d-flex">
@@ -633,11 +633,11 @@ export const Home = () => {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
         {/* /Become a instructor */}
 
         {/* Blog */}
-        <section
+        {/* <section
           className="section latest-blog"
           style={{ backgroundImage: "url(" + BgBanner2 + ")" }}
         >
@@ -811,7 +811,7 @@ export const Home = () => {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
         {/* /Blog */}
 
         {/* Footer */}
